@@ -2,7 +2,7 @@
   "name": "BreathSync",
   "short_name": "BreathSync",
   "description": "世界中の人と同時に深呼吸するアプリ",
-  "start_url": "/",
+  "start_url": "/breathsync/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1D9E75",
