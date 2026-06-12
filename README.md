@@ -1,4 +1,4 @@
-# BreathSync 🌿
+# Fuu 🌿
 
 **Breathe together with the world.**
 

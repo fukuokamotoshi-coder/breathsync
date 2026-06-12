@@ -1,4 +1,4 @@
-const CACHE = 'breathsync-v2';
+const CACHE = 'fuu-v3';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {

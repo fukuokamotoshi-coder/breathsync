@@ -21,7 +21,7 @@ Claude: ④ assetlinks.json をサイトに配置
    - ⚠️ 承認まで数時間〜数日かかります。先に始めてください。
 
 > 📌 個人情報はGoogleにのみ提出されます。ストアの「デベロッパー名」は
-> ニックネーム可（例: BreathSync Team）。住所等の公開設定に注意。
+> ニックネーム可（例: Fuu Team）。住所等の公開設定に注意。
 
 ---
 
@@ -42,7 +42,7 @@ Claude: ④ assetlinks.json をサイトに配置
 ## ③〜⑤ アップロードと審査
 
 1. Play Console → 「アプリを作成」
-   - アプリ名: BreathSync
+   - アプリ名: Fuu
    - 言語: 日本語 / 無料 / アプリ
 2. 「製品版」→ .aab をアップロード
 3. ストア掲載情報に下の文章をコピペ
@@ -56,7 +56,7 @@ Claude: ④ assetlinks.json をサイトに配置
 
 ### アプリ名（30字以内）
 ```
-BreathSync - 世界と一緒に深呼吸
+Fuu - 世界と一緒に深呼吸
 ```
 
 ### 簡単な説明（80字以内）
@@ -68,7 +68,7 @@ BreathSync - 世界と一緒に深呼吸
 ```
 🌍 今、世界の誰かと一緒に呼吸しよう
 
-BreathSync は「ひとりじゃない深呼吸」を体験できる、まったく新しいウェルネスアプリです。アプリを開くと、今この瞬間に世界中で何人が一緒に呼吸しているかがリアルタイムで表示されます。
+Fuu は「ひとりじゃない深呼吸」を体験できる、まったく新しいウェルネスアプリです。アプリを開くと、今この瞬間に世界中で何人が一緒に呼吸しているかがリアルタイムで表示されます。
 
 ✨ 特徴
 
@@ -105,7 +105,7 @@ BreathSync は「ひとりじゃない深呼吸」を体験できる、まった
 ```
 Short: Breathe with someone, somewhere, right now. Free mindful breathing app. No signup.
 
-Full: BreathSync shows you how many people around the world are breathing
+Full: Fuu shows you how many people around the world are breathing
 with you in real time. Science-backed patterns (4-7-8, box breathing),
 8 generative soundscapes plus your own music, photo breathing, friend codes,
 daily bonuses and a cheering mascot called Fuu. No account, no ads,

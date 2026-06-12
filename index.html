@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BreathSync — Breathe Together with the World</title>
+<title>Fuu — Breathe Together with the World</title>
 <meta name="description" content="Breathe in sync with thousands of people around the world. Free breathing app with real-time presence, friends, and guided sessions.">
 <meta name="keywords" content="breathing app, meditation, mindfulness, stress relief, anxiety, deep breathing, 4-7-8 breathing, box breathing, wellness">
 <meta name="theme-color" content="#1D9E75">
@@ -13,17 +13,17 @@
 <!-- Open Graph (SNSシェア用) -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fukuokamotoshi-coder.github.io/breathsync/">
-<meta property="og:title" content="BreathSync — Breathe Together with the World">
+<meta property="og:title" content="Fuu — Breathe Together with the World">
 <meta property="og:description" content="Join thousands of people breathing together right now. Free, no signup, works everywhere.">
 <meta property="og:image" content="https://fukuokamotoshi-coder.github.io/breathsync/og-image.png">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:locale:alternate" content="en_US">
-<meta property="og:site_name" content="BreathSync">
+<meta property="og:site_name" content="Fuu">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@breathsync">
-<meta name="twitter:title" content="BreathSync — Breathe Together with the World">
+<meta name="twitter:title" content="Fuu — Breathe Together with the World">
 <meta name="twitter:description" content="Join thousands of people breathing together right now. Free, no signup.">
 <meta name="twitter:image" content="https://fukuokamotoshi-coder.github.io/breathsync/og-image.png">
 
@@ -32,7 +32,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "BreathSync",
+  "name": "Fuu",
   "url": "https://fukuokamotoshi-coder.github.io/breathsync/",
   "description": "Breathe in sync with thousands of people around the world.",
   "applicationCategory": "HealthApplication",
@@ -285,7 +285,7 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 <!-- ════ HOME ════ -->
 <section class="screen active" id="scr-home" role="main" aria-label="ホーム">
   <div class="topbar">
-    <h1>BreathSync</h1>
+    <h1>Fuu</h1>
     <span class="drops-pill">💧 <span id="drops-val">0</span></span>
   </div>
   <div class="live-bar">
@@ -447,7 +447,7 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
   </div>
   <div class="plan-card">
     <div class="plan-title" data-i18n="sup_title">サポーターになる 🌿</div>
-    <div class="plan-price" data-i18n="sup_sub">BreathSync はずっと無料。気に入ったら支えてください。</div>
+    <div class="plan-price" data-i18n="sup_sub">Fuu はずっと無料。気に入ったら支えてください。</div>
     <div class="plan-feats">
       <div class="pf"><span class="pf-check">✓</span><span data-i18n="sup_f1">サポーターバッジ 🌿</span></div>
       <div class="pf"><span class="pf-check">✓</span><span data-i18n="sup_f2">新機能への早期アクセス</span></div>
@@ -464,6 +464,7 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
     <div class="mi" onclick="openModal('lang')"><span class="mi-lbl" data-i18n="set_lang">言語 / Language</span><span class="mi-val" id="val-lang">›</span></div>
     <div class="mi" onclick="openModal('theme')"><span class="mi-lbl" data-i18n="set_theme">テーマカラー</span><span class="mi-val" id="val-theme">›</span></div>
     <div class="mi" onclick="openModal('notify')"><span class="mi-lbl" data-i18n="set_notify">リマインダー</span><span class="mi-val" id="val-notify">›</span></div>
+    <div class="mi" onclick="openModal('feedback')"><span class="mi-lbl" data-i18n="set_feedback">フウに意見を送る 💌</span><span class="mi-val">+💧 ›</span></div>
     <div class="mi" onclick="openModal('export')"><span class="mi-lbl" data-i18n="set_export">データをエクスポート</span><span class="mi-val">›</span></div>
     <div class="mi mi-danger" onclick="openModal('reset')"><span class="mi-lbl" data-i18n="set_reset">データを初期化</span></div>
   </div>
@@ -538,6 +539,7 @@ const DEFAULTS = {
   history: {}, friends: [],
   flags: { collab: false, world: false, night: false },
   login: { last: '', streak: 0, drops: 0 },
+  fb: { count: 0, lastReward: '' },
   welcomed: false
 };
 let S;
@@ -546,6 +548,7 @@ try {
   S = Object.assign({}, DEFAULTS, raw || {});
   S.flags = Object.assign({}, DEFAULTS.flags, (raw && raw.flags) || {});
   S.login = Object.assign({}, DEFAULTS.login, (raw && raw.login) || {});
+  S.fb = Object.assign({}, DEFAULTS.fb, (raw && raw.fb) || {});
 } catch (e) { S = Object.assign({}, DEFAULTS); }
 if (!S.code) S.code = genCode();
 const save = () => { try { localStorage.setItem('bs1', JSON.stringify(S)); } catch (e) {} };
@@ -621,7 +624,7 @@ const I18N = {
     b_30d:'30日連続', b_night:'深夜の静寂', b_drops:'しずく300', b_world:'世界ルーム',
     sg_sessions:'総セッション', sg_total:'総呼吸時間', sg_friends:'フレンド',
     prof_sub:'すべての機能が無料', guest:'ゲスト',
-    sup_title:'サポーターになる 🌿', sup_sub:'BreathSync はずっと無料。気に入ったら支えてください。',
+    sup_title:'サポーターになる 🌿', sup_sub:'Fuu はずっと無料。気に入ったら支えてください。',
     sup_f1:'サポーターバッジ 🌿', sup_f2:'新機能への早期アクセス', sup_f3:'開発への直接フィードバック枠',
     sup_m:'月 ¥480 で支援', sup_y:'年 ¥3,800 で支援',
     settings:'設定', set_name:'名前', set_lang:'言語 / Language', set_theme:'テーマカラー',
@@ -651,6 +654,16 @@ const I18N = {
     comp_body: m => `${m} の深呼吸を完了しました`,
     comp_drops:'+5 しずく', close:'閉じる',
     drops_note:'しずくは今後のアイテム交換で使えます（準備中）',
+    set_feedback:'フウに意見を送る 💌',
+    fb_title:'フィードバック',
+    fb_desc:'意見・アイデア・バグ報告など、なんでも送ってください。お礼にしずくがもらえます（報酬は1日1回）。',
+    fb_ph:'例：こんな機能がほしい！　ここが使いにくい…',
+    fb_send:'フウに送る',
+    fb_thanks:'ありがとう！\nだいじに よんで、もっといいアプリにするね！',
+    fb_reward: n => `+${n} しずく`,
+    fb_limit:'送信しました！（今日のお礼はもう受け取り済みです）',
+    fb_error:'送信に失敗しました。時間をおいて試してください',
+    fb_empty:'内容を入力してください',
     nav_home:'ホーム', nav_friends:'フレンド', nav_rooms:'ルーム', nav_stats:'記録', nav_profile:'プロフィール',
     stripe_unset:'決済リンクは準備中です。もう少しお待ちください！',
     wd: ['日','月','火','水','木','金','土']
@@ -692,7 +705,7 @@ const I18N = {
     b_30d:'30-day streak', b_night:'Midnight calm', b_drops:'300 drops', b_world:'World room',
     sg_sessions:'Total sessions', sg_total:'Total time', sg_friends:'Friends',
     prof_sub:'Everything is free', guest:'Guest',
-    sup_title:'Become a supporter 🌿', sup_sub:'BreathSync is free forever. Support us if you love it.',
+    sup_title:'Become a supporter 🌿', sup_sub:'Fuu is free forever. Support us if you love it.',
     sup_f1:'Supporter badge 🌿', sup_f2:'Early access to new features', sup_f3:'Direct line to the dev team',
     sup_m:'¥480 / month', sup_y:'¥3,800 / year',
     settings:'Settings', set_name:'Name', set_lang:'言語 / Language', set_theme:'Theme color',
@@ -722,6 +735,16 @@ const I18N = {
     comp_body: m => `You completed ${m} of deep breathing`,
     comp_drops:'+5 drops', close:'Close',
     drops_note:'Drops will be exchangeable for items soon',
+    set_feedback:'Send feedback to Fuu 💌',
+    fb_title:'Feedback',
+    fb_desc:'Ideas, requests, bug reports — anything helps. You\'ll get drops as a thank-you (reward once per day).',
+    fb_ph:'e.g. I wish it had this feature!',
+    fb_send:'Send to Fuu',
+    fb_thanks:'Thank you!\nI\'ll read it carefully and make the app better!',
+    fb_reward: n => `+${n} drops`,
+    fb_limit:'Sent! (Today\'s reward was already claimed)',
+    fb_error:'Failed to send. Please try again later',
+    fb_empty:'Please write something first',
     nav_home:'Home', nav_friends:'Friends', nav_rooms:'Rooms', nav_stats:'Stats', nav_profile:'Profile',
     stripe_unset:'Payment links coming soon!',
     wd: ['Su','Mo','Tu','We','Th','Fr','Sa']
@@ -1102,7 +1125,7 @@ window.copyMyCode = () => {
 };
 window.shareInvite = () => {
   const link = location.origin + location.pathname + '?friend=' + S.code;
-  if (navigator.share) navigator.share({ title: 'BreathSync', url: link }).catch(() => {});
+  if (navigator.share) navigator.share({ title: 'Fuu', url: link }).catch(() => {});
   else if (navigator.clipboard) navigator.clipboard.writeText(link).then(() => toast(t('copied')));
 };
 function addFriendByCode(code) {
@@ -1345,7 +1368,7 @@ function showCompleteModal() {
 function fireReminder() {
   const body = t('rem_body');
   if ('Notification' in window && Notification.permission === 'granted') {
-    try { new Notification('BreathSync', { body, icon: 'icon-192.png' }); } catch (e) { toast(body); }
+    try { new Notification('Fuu', { body, icon: 'icon-192.png' }); } catch (e) { toast(body); }
   } else toast(body);
 }
 setInterval(() => {
@@ -1432,7 +1455,12 @@ const MODALS = {
   addfriend: () => openRawModal(t('addf_title'),
     '<p style="font-size:13px;color:var(--t2);margin-bottom:10px">' + t('addf_desc') + '</p>'
     + '<input type="text" id="inp-code" maxlength="6" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:.2em;font-family:monospace">'
-    + '<button class="modal-btn" onclick="submitFriendCode()">' + t('addf_do') + '</button>')
+    + '<button class="modal-btn" onclick="submitFriendCode()">' + t('addf_do') + '</button>'),
+  feedback: () => openRawModal(t('fb_title'),
+    '<div style="display:flex;justify-content:center;margin-bottom:6px">' + fuuSVG('happy', 70) + '</div>'
+    + '<p style="font-size:13px;color:var(--t2);margin-bottom:10px">' + t('fb_desc') + '</p>'
+    + '<textarea id="inp-fb" rows="4" maxlength="2000" placeholder="' + t('fb_ph') + '" style="width:100%;font-size:15px;padding:10px 12px;border:.5px solid var(--border2);border-radius:10px;background:var(--surface2);color:var(--t);font-family:inherit;resize:vertical"></textarea>'
+    + '<button class="modal-btn" id="fb-send-btn" onclick="submitFeedback()">' + t('fb_send') + '</button>')
 };
 window.openModal = (key) => { if (MODALS[key]) MODALS[key](); };
 
@@ -1468,6 +1496,41 @@ window.disableReminder = () => {
 };
 window.submitFriendCode = () => {
   if (addFriendByCode($('inp-code').value)) { closeModal(); toast(t('addf_ok')); }
+};
+window.submitFeedback = async () => {
+  const msg = ($('inp-fb').value || '').trim();
+  if (!msg) { toast(t('fb_empty')); return; }
+  if (!sbClient) { toast(t('fb_error')); return; }
+  const btn = $('fb-send-btn');
+  btn.disabled = true; btn.style.opacity = '.6';
+  const { error } = await sbClient.from('feedback')
+    .insert({ code: S.code, name: S.name || null, message: msg.slice(0, 2000), lang: S.lang });
+  if (error) {
+    btn.disabled = false; btn.style.opacity = '1';
+    toast(t('fb_error'));
+    return;
+  }
+  const today = dayKey(new Date());
+  let reward = 0;
+  if (S.fb.lastReward !== today) {
+    reward = S.fb.count === 0 ? 30 : 10;
+    S.login.drops += reward;
+    S.fb.lastReward = today;
+  }
+  S.fb.count++;
+  save(); renderHome();
+  closeModal();
+  if (reward > 0) {
+    openRawModal(t('fb_title'),
+      '<div class="fuu-box">'
+      + '<div class="fuu-bounce">' + fuuSVG('cheer', 110) + '</div>'
+      + '<div class="fuu-talk">' + escapeHtml(t('fb_thanks')).replace(/\n/g, '<br>') + '</div>'
+      + '<div class="bonus-num">' + t('fb_reward', reward) + '</div>'
+      + '</div>'
+      + '<button class="modal-btn" onclick="closeModal()">' + t('close') + '</button>');
+  } else {
+    toast(t('fb_limit'));
+  }
 };
 window.exportCSV = () => {
   const rows = [['date', 'sessions', 'seconds', 'breaths']];
