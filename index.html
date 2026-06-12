@@ -275,6 +275,29 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .fuu-bounce{animation:bounce 1.6s ease-in-out infinite;}
 
+/* ── 応援パートナー吹き出し ── */
+.bubble{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:7px 14px;font-size:12px;color:var(--t);display:flex;align-items:center;gap:7px;opacity:0;transition:opacity .4s;z-index:3;max-width:85%;pointer-events:none;}
+.bubble.show{opacity:1;}
+.bubble .b-av{width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.bubble .b-av img,.bubble .b-av svg{width:26px;height:26px;border-radius:50%;object-fit:cover;}
+
+/* ── ランキング ── */
+.rk-tabs{display:flex;gap:6px;margin-bottom:8px;}
+.rk-tab{flex:1;font-size:11px;font-weight:500;padding:6px 0;border:.5px solid var(--border);border-radius:8px;color:var(--t2);}
+.rk-tab.active{background:var(--g-bg);color:var(--g2);border-color:var(--g-mid);}
+.rk-row{display:flex;align-items:center;gap:10px;padding:8px 4px;font-size:13px;}
+.rk-row+.rk-row{border-top:.5px solid var(--border);}
+.rk-row.me{background:var(--g-bg);border-radius:8px;border-top:none;}
+.rk-pos{width:30px;text-align:center;font-weight:700;color:var(--t2);flex-shrink:0;}
+.rk-name{flex:1;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rk-val{font-weight:600;color:var(--g2);flex-shrink:0;}
+
+/* ── パートナー選択 ── */
+.partner-grid{display:flex;gap:8px;justify-content:center;padding:6px 0;flex-wrap:wrap;}
+.partner-opt{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--t2);padding:8px;border:2px solid transparent;border-radius:12px;background:var(--surface2);}
+.partner-opt.sel{border-color:var(--g);background:var(--g-bg);color:var(--g2);font-weight:600;}
+.partner-opt img{width:56px;height:56px;border-radius:50%;object-fit:cover;}
+
 /* ── Util ── */
 .sec-title{font-size:11px;color:var(--t2);letter-spacing:.05em;padding:8px 16px 4px;text-transform:uppercase;}
 </style>
@@ -299,6 +322,7 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
   </div>
   <div class="stage" id="stage">
     <div class="photo-layer" id="photo-layer"><img id="photo-img" alt=""><div class="photo-dim"></div></div>
+    <div class="bubble" id="bubble"><span class="b-av" id="bubble-av"></span><span id="bubble-text"></span></div>
     <div class="rings" aria-hidden="true">
       <div class="ring"></div>
       <div class="ring"></div>
@@ -427,6 +451,18 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
       <div class="chart-labels" id="chart-labels"></div>
     </div>
   </div>
+  <div class="sec-title" data-i18n="ranking">🏆 世界ランキング</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="rk-tabs">
+        <button class="rk-tab active" onclick="setRank('drops',this)" data-i18n="rk_drops">💧 しずく</button>
+        <button class="rk-tab" onclick="setRank('seconds',this)" data-i18n="rk_time">呼吸時間</button>
+        <button class="rk-tab" onclick="setRank('streak',this)" data-i18n="rk_streak">連続日数</button>
+      </div>
+      <div id="rk-list" style="min-height:50px"></div>
+    </div>
+  </div>
+
   <div class="sec-title" data-i18n="badges">実績バッジ</div>
   <div class="card">
     <div class="card-body"><div class="ach-grid" id="ach-grid"></div></div>
@@ -464,6 +500,7 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
     <div class="mi" onclick="openModal('lang')"><span class="mi-lbl" data-i18n="set_lang">言語 / Language</span><span class="mi-val" id="val-lang">›</span></div>
     <div class="mi" onclick="openModal('theme')"><span class="mi-lbl" data-i18n="set_theme">テーマカラー</span><span class="mi-val" id="val-theme">›</span></div>
     <div class="mi" onclick="openModal('notify')"><span class="mi-lbl" data-i18n="set_notify">リマインダー</span><span class="mi-val" id="val-notify">›</span></div>
+    <div class="mi" onclick="openModal('partner')"><span class="mi-lbl" data-i18n="set_partner">応援パートナー</span><span class="mi-val" id="val-partner">›</span></div>
     <div class="mi" onclick="openModal('feedback')"><span class="mi-lbl" data-i18n="set_feedback">フウに意見を送る 💌</span><span class="mi-val">+💧 ›</span></div>
     <div class="mi" onclick="openModal('export')"><span class="mi-lbl" data-i18n="set_export">データをエクスポート</span><span class="mi-val">›</span></div>
     <div class="mi mi-danger" onclick="openModal('reset')"><span class="mi-lbl" data-i18n="set_reset">データを初期化</span></div>
@@ -500,6 +537,7 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 <!-- 隠しファイル入力 -->
 <input type="file" id="file-audio" accept="audio/*" style="display:none">
 <input type="file" id="file-photo" accept="image/*" style="display:none">
+<input type="file" id="file-partner" accept="image/*" style="display:none">
 
 <!-- Toast -->
 <div id="toast" role="status" aria-live="polite"></div>
@@ -540,6 +578,7 @@ const DEFAULTS = {
   flags: { collab: false, world: false, night: false },
   login: { last: '', streak: 0, drops: 0 },
   fb: { count: 0, lastReward: '' },
+  partner: { type: 'fuu', name: '' },
   welcomed: false
 };
 let S;
@@ -549,6 +588,7 @@ try {
   S.flags = Object.assign({}, DEFAULTS.flags, (raw && raw.flags) || {});
   S.login = Object.assign({}, DEFAULTS.login, (raw && raw.login) || {});
   S.fb = Object.assign({}, DEFAULTS.fb, (raw && raw.fb) || {});
+  S.partner = Object.assign({}, DEFAULTS.partner, (raw && raw.partner) || {});
 } catch (e) { S = Object.assign({}, DEFAULTS); }
 if (!S.code) S.code = genCode();
 const save = () => { try { localStorage.setItem('bs1', JSON.stringify(S)); } catch (e) {} };
@@ -654,6 +694,19 @@ const I18N = {
     comp_body: m => `${m} の深呼吸を完了しました`,
     comp_drops:'+5 しずく', close:'閉じる',
     drops_note:'しずくは今後のアイテム交換で使えます（準備中）',
+    set_partner:'応援パートナー',
+    partner_title:'応援パートナー',
+    partner_desc:'一緒に呼吸して、励ましてくれる相手を選んでください。好きな人の写真も使えます。',
+    partner_photo:'写真',
+    partner_name_ph:'パートナーの名前（推しの名前でもOK）',
+    partner_set:'パートナーを設定しました！',
+    cheer_msgs:['その調子！','じょうずだよ','すー…… はー……','リラックス……','あとすこし！','ふかく…… ゆっくり……','きみなら できる！','いっしょに がんばろ'],
+    praise_msgs:['今日もえらい！','よく がんばったね！','いっしょに呼吸できて うれしい！','心、ととのったね','すごい！ つづけてて えらいよ'],
+    ranking:'🏆 世界ランキング',
+    rk_drops:'💧 しずく', rk_time:'呼吸時間', rk_streak:'連続日数',
+    rk_you:'あなた', rk_anon:'ゲスト',
+    rk_empty:'まだ誰もいません。一番乗りしよう！',
+    rk_err:'ランキングは準備中です',
     set_feedback:'フウに意見を送る 💌',
     fb_title:'フィードバック',
     fb_desc:'意見・アイデア・バグ報告など、なんでも送ってください。お礼にしずくがもらえます（報酬は1日1回）。',
@@ -735,6 +788,19 @@ const I18N = {
     comp_body: m => `You completed ${m} of deep breathing`,
     comp_drops:'+5 drops', close:'Close',
     drops_note:'Drops will be exchangeable for items soon',
+    set_partner:'Breathing partner',
+    partner_title:'Breathing partner',
+    partner_desc:'Choose someone to breathe with and cheer you on. You can even use a photo of someone you love.',
+    partner_photo:'Photo',
+    partner_name_ph:'Partner\'s name',
+    partner_set:'Partner set!',
+    cheer_msgs:['You\'re doing great!','Nice and easy','In…… out……','Relax……','Almost there!','Deep…… and slow……','You\'ve got this!','Breathing with you'],
+    praise_msgs:['You did great today!','Well done!','Happy I could breathe with you!','Feeling calmer now, right?','Amazing — keep it up!'],
+    ranking:'🏆 World ranking',
+    rk_drops:'💧 Drops', rk_time:'Breath time', rk_streak:'Streak',
+    rk_you:'You', rk_anon:'Guest',
+    rk_empty:'Nobody here yet. Be the first!',
+    rk_err:'Ranking is coming soon',
     set_feedback:'Send feedback to Fuu 💌',
     fb_title:'Feedback',
     fb_desc:'Ideas, requests, bug reports — anything helps. You\'ll get drops as a thank-you (reward once per day).',
@@ -769,6 +835,7 @@ function applyI18n() {
   $('val-theme').textContent = t('theme_' + S.theme) + ' ›';
   $('val-notify').textContent = (S.reminder || t('off')) + ' ›';
   $('val-name').textContent = (S.name || t('guest')) + ' ›';
+  $('val-partner').textContent = partnerName() + ' ›';
   $('prof-name').textContent = S.name || t('guest');
   renderAll();
   renderFriends();
@@ -801,8 +868,10 @@ darkMq.addEventListener('change', () => applyTheme(S.theme));
 /* ══════════════════════════════
    フウ（オリジナルキャラクター）
 ══════════════════════════════ */
-function fuuSVG(mood, size) {
+function fuuSVG(mood, size, c1, c2) {
   size = size || 110;
+  c1 = c1 || 'var(--g)';
+  c2 = c2 || 'var(--g2)';
   let face;
   if (mood === 'cheer') {
     face = '<path d="M33 44 q5 -6 10 0" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
@@ -817,12 +886,56 @@ function fuuSVG(mood, size) {
          + '<path d="M48 59 Q55 66 62 59" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>';
   }
   return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 110 110" aria-hidden="true">'
-    + '<ellipse cx="55" cy="63" rx="42" ry="38" fill="var(--g)"/>'
+    + '<ellipse cx="55" cy="63" rx="42" ry="38" fill="' + c1 + '"/>'
     + '<ellipse cx="55" cy="76" rx="25" ry="16" fill="rgba(255,255,255,.16)"/>'
-    + '<path d="M55 26 Q54 13 44 9 Q57 7 60 15 Q65 8 75 12 Q65 15 62 26 Z" fill="var(--g2)"/>'
+    + '<path d="M55 26 Q54 13 44 9 Q57 7 60 15 Q65 8 75 12 Q65 15 62 26 Z" fill="' + c2 + '"/>'
     + '<circle cx="29" cy="57" r="6" fill="rgba(255,255,255,.28)"/>'
     + '<circle cx="81" cy="57" r="6" fill="rgba(255,255,255,.28)"/>'
     + face + '</svg>';
+}
+
+/* ══════════════════════════════
+   応援パートナー
+══════════════════════════════ */
+const PARTNERS = {
+  fuu:  { c1: null,      c2: null,      ja:'フウ', en:'Fuu' },
+  momo: { c1: '#ED93B1', c2: '#993556', ja:'モモ', en:'Momo' },
+  sora: { c1: '#85B7EB', c2: '#185FA5', ja:'ソラ', en:'Sora' },
+  yume: { c1: '#AFA9EC', c2: '#534AB7', ja:'ユメ', en:'Yume' }
+};
+let partnerPhotoUrl = null;
+function partnerName() {
+  return S.partner.name || (PARTNERS[S.partner.type] || PARTNERS.fuu)[S.lang] || 'フウ';
+}
+function partnerAvatar(size, mood) {
+  if (S.partner.type === 'photo' && partnerPhotoUrl) {
+    return '<img src="' + partnerPhotoUrl + '" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;object-fit:cover" alt="">';
+  }
+  const pr = PARTNERS[S.partner.type] || PARTNERS.fuu;
+  return fuuSVG(mood || 'happy', size, pr.c1, pr.c2);
+}
+let bubbleIv = null, bubbleHideTo = null, bubbleFirstTo = null;
+function showBubble(msg) {
+  $('bubble-av').innerHTML = partnerAvatar(26);
+  $('bubble-text').textContent = msg;
+  $('bubble').classList.add('show');
+  clearTimeout(bubbleHideTo);
+  bubbleHideTo = setTimeout(() => $('bubble').classList.remove('show'), 5000);
+}
+function randomCheer() {
+  const pool = t('cheer_msgs');
+  showBubble(pool[Math.floor(Math.random() * pool.length)]);
+}
+function startCheering() {
+  stopCheering();
+  bubbleFirstTo = setTimeout(randomCheer, 7000);
+  bubbleIv = setInterval(randomCheer, 26000);
+}
+function stopCheering() {
+  clearTimeout(bubbleFirstTo);
+  clearInterval(bubbleIv);
+  clearTimeout(bubbleHideTo);
+  $('bubble').classList.remove('show');
 }
 
 /* ══════════════════════════════
@@ -1033,6 +1146,17 @@ window.togglePhoto = async () => {
   applyPhoto();
 };
 window.pickPhoto = () => $('file-photo').click();
+$('file-partner').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try { await idb.put('partner-photo', file); } catch (err) {}
+  if (partnerPhotoUrl) URL.revokeObjectURL(partnerPhotoUrl);
+  partnerPhotoUrl = URL.createObjectURL(file);
+  S.partner.type = 'photo';
+  save();
+  MODALS.partner();
+  e.target.value = '';
+});
 $('file-photo').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -1206,6 +1330,7 @@ function startSession() {
   save();
   startBtn.textContent = t('btn_stop');
   doRipple();
+  startCheering();
   if (currentBgm !== 'none') playBgm(currentBgm);
   raf = requestAnimationFrame(tick);
   statIv = setInterval(() => {
@@ -1226,10 +1351,12 @@ function endSession(completed) {
   bprogFill.style.width = '0%';
   startBtn.textContent = t('btn_again');
   fadeBgmOut();
+  stopCheering();
   const h = new Date().getHours();
   if (h >= 0 && h < 4) S.flags.night = true;
   save();
   renderAll();
+  pushLeaderboard();
   if (completed && sessionSec >= 30) {
     S.login.drops += 5; save();
     showCompleteModal();
@@ -1339,6 +1466,7 @@ function checkLoginBonus() {
   S.welcomed = true;
   save();
   renderHome();
+  pushLeaderboard();
   openRawModal(t('bonus_title'),
     '<div class="fuu-box">'
     + '<div class="fuu-bounce">' + fuuSVG(firstTime ? 'happy' : 'cheer', 120) + '</div>'
@@ -1352,15 +1480,71 @@ function checkLoginBonus() {
 function showCompleteModal() {
   const min = Math.floor(sessionSec / 60);
   const dur = min >= 1 ? (S.lang === 'ja' ? min + '分間' : min + ' min') : (S.lang === 'ja' ? sessionSec + '秒間' : sessionSec + ' sec');
+  const pool = t('praise_msgs');
+  const praise = (S.name ? S.name + (S.lang === 'ja' ? '、' : ', ') : '') + pool[Math.floor(Math.random() * pool.length)];
   openRawModal(t('comp_title'),
     '<div class="fuu-box">'
-    + '<div class="fuu-bounce">' + fuuSVG('cheer', 110) + '</div>'
-    + '<div class="fuu-talk">' + t('comp_body', dur) + '</div>'
+    + '<div class="fuu-bounce">' + partnerAvatar(110, 'cheer') + '</div>'
+    + '<div style="font-size:12px;color:var(--t2)">' + escapeHtml(partnerName()) + '</div>'
+    + '<div class="fuu-talk">「' + escapeHtml(praise) + '」</div>'
+    + '<div style="font-size:13px;color:var(--t2)">' + t('comp_body', dur) + '</div>'
     + '<div class="bonus-num">' + t('comp_drops') + '</div>'
     + '</div>'
     + '<button class="modal-btn" onclick="closeModal()">' + t('close') + '</button>');
   renderHome();
 }
+
+/* ══════════════════════════════
+   世界ランキング
+══════════════════════════════ */
+let rkMetric = 'drops';
+let lbPushedAt = 0;
+async function pushLeaderboard() {
+  if (!sbClient) return;
+  const now = Date.now();
+  if (now - lbPushedAt < 5000) return;
+  lbPushedAt = now;
+  try {
+    await sbClient.from('leaderboard').upsert({
+      code: S.code,
+      name: S.name || null,
+      drops: S.login.drops,
+      streak: calcStreak(),
+      seconds: sumHist('seconds'),
+      updated_at: new Date().toISOString()
+    });
+  } catch (e) {}
+}
+async function renderRanking() {
+  const box = $('rk-list');
+  if (!box) return;
+  if (!sbClient) { box.innerHTML = '<div class="empty-box">' + t('rk_err') + '</div>'; return; }
+  try {
+    const { data, error } = await sbClient.from('leaderboard')
+      .select('code,name,drops,streak,seconds')
+      .order(rkMetric, { ascending: false })
+      .limit(50);
+    if (error) { box.innerHTML = '<div class="empty-box">' + t('rk_err') + '</div>'; return; }
+    if (!data || !data.length) { box.innerHTML = '<div class="empty-box">' + t('rk_empty') + '</div>'; return; }
+    const fmtVal = v => rkMetric === 'seconds' ? fmtTotal(v || 0) : (v || 0).toLocaleString();
+    const medals = ['🥇', '🥈', '🥉'];
+    let html = '';
+    data.forEach((row, i) => {
+      const me = row.code === S.code;
+      html += '<div class="rk-row' + (me ? ' me' : '') + '">'
+        + '<span class="rk-pos">' + (medals[i] || (i + 1)) + '</span>'
+        + '<span class="rk-name">' + escapeHtml(row.name || t('rk_anon')) + (me ? ' ✦' : '') + '</span>'
+        + '<span class="rk-val">' + fmtVal(row[rkMetric]) + '</span></div>';
+    });
+    box.innerHTML = html;
+  } catch (e) { box.innerHTML = '<div class="empty-box">' + t('rk_err') + '</div>'; }
+}
+window.setRank = (m, el) => {
+  rkMetric = m;
+  document.querySelectorAll('.rk-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderRanking();
+};
 
 /* ══════════════════════════════
    リマインダー通知
@@ -1391,7 +1575,7 @@ window.goTo = (name) => {
   $('scr-' + name).classList.add('active');
   $('nav-' + name).classList.add('active');
   if (name === 'friends') $('friends-dot').style.display = 'none';
-  if (name === 'stats') renderAll();
+  if (name === 'stats') { renderAll(); pushLeaderboard(); renderRanking(); }
 };
 
 /* ══════════════════════════════
@@ -1456,6 +1640,23 @@ const MODALS = {
     '<p style="font-size:13px;color:var(--t2);margin-bottom:10px">' + t('addf_desc') + '</p>'
     + '<input type="text" id="inp-code" maxlength="6" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:.2em;font-family:monospace">'
     + '<button class="modal-btn" onclick="submitFriendCode()">' + t('addf_do') + '</button>'),
+  partner: () => {
+    let g = '<div class="partner-grid">';
+    Object.keys(PARTNERS).forEach(k => {
+      const pr = PARTNERS[k];
+      g += '<button class="partner-opt' + (S.partner.type === k ? ' sel' : '') + '" onclick="choosePartner(\'' + k + '\')">'
+        + fuuSVG('happy', 56, pr.c1, pr.c2) + '<span>' + pr[S.lang] + '</span></button>';
+    });
+    g += '<button class="partner-opt' + (S.partner.type === 'photo' ? ' sel' : '') + '" onclick="choosePartnerPhoto()">'
+      + (partnerPhotoUrl
+          ? '<img src="' + partnerPhotoUrl + '" alt="">'
+          : '<span style="font-size:34px;width:56px;height:56px;display:flex;align-items:center;justify-content:center">📷</span>')
+      + '<span>' + t('partner_photo') + '</span></button></div>';
+    openRawModal(t('partner_title'),
+      '<p style="font-size:13px;color:var(--t2);margin-bottom:6px">' + t('partner_desc') + '</p>' + g
+      + '<input type="text" id="inp-pname" maxlength="12" placeholder="' + t('partner_name_ph') + '" value="' + escapeHtml(S.partner.name) + '" style="margin-top:8px">'
+      + '<button class="modal-btn" onclick="savePartner()">' + t('saveBtn') + '</button>');
+  },
   feedback: () => openRawModal(t('fb_title'),
     '<div style="display:flex;justify-content:center;margin-bottom:6px">' + fuuSVG('happy', 70) + '</div>'
     + '<p style="font-size:13px;color:var(--t2);margin-bottom:10px">' + t('fb_desc') + '</p>'
@@ -1467,6 +1668,7 @@ window.openModal = (key) => { if (MODALS[key]) MODALS[key](); };
 window.saveName = () => {
   S.name = $('inp-name').value.trim().slice(0, 20);
   save(); trackPresence(); applyI18n();
+  lbPushedAt = 0; pushLeaderboard();
   closeModal(); toast(t('name_set'));
 };
 window.setLang = (l) => {
@@ -1497,6 +1699,20 @@ window.disableReminder = () => {
 window.submitFriendCode = () => {
   if (addFriendByCode($('inp-code').value)) { closeModal(); toast(t('addf_ok')); }
 };
+window.choosePartner = (k) => {
+  S.partner.type = k;
+  if (!S.partner.name || Object.values(PARTNERS).some(p => p.ja === S.partner.name || p.en === S.partner.name)) {
+    S.partner.name = PARTNERS[k][S.lang];
+  }
+  save(); MODALS.partner();
+};
+window.choosePartnerPhoto = () => $('file-partner').click();
+window.savePartner = () => {
+  const v = $('inp-pname').value.trim().slice(0, 12);
+  if (v) S.partner.name = v;
+  save(); applyI18n();
+  closeModal(); toast(t('partner_set'));
+};
 window.submitFeedback = async () => {
   const msg = ($('inp-fb').value || '').trim();
   if (!msg) { toast(t('fb_empty')); return; }
@@ -1519,6 +1735,7 @@ window.submitFeedback = async () => {
   }
   S.fb.count++;
   save(); renderHome();
+  lbPushedAt = 0; pushLeaderboard();
   closeModal();
   if (reward > 0) {
     openRawModal(t('fb_title'),
@@ -1607,6 +1824,8 @@ idb.open().then(async () => {
   }
   const photoBlob = await idb.get('photo').catch(() => null);
   if (photoBlob) { photoUrl = URL.createObjectURL(photoBlob); applyPhoto(); }
+  const partnerBlob = await idb.get('partner-photo').catch(() => null);
+  if (partnerBlob) partnerPhotoUrl = URL.createObjectURL(partnerBlob);
 }).catch(() => {});
 
 // 招待リンク（?friend=CODE）処理
