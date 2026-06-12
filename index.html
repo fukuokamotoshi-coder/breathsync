@@ -94,7 +94,7 @@ html,body{height:100%;background:var(--bg);color:var(--t);}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.5;overflow:hidden;}
 
 /* ── App shell ── */
-#app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;position:relative;background:var(--bg);}
+#app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;position:relative;background:var(--bg);overflow:hidden;}
 
 /* ── Screens ── */
 .screen{display:none;flex-direction:column;flex:1;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 8px);}
@@ -742,7 +742,7 @@ function playBgm(type) {
     src.connect(filter); filter.connect(g); g.connect(master);
     src.start(); bgmNodes.push(src);
     // 鳥のさえずり（ランダムなサイン波）
-    function scheduleBird() {
+    const scheduleBird = () => {
       if (!bgmNodes.includes(src)) return;
       const delay = Math.random() * 4 + 1;
       const freq = [880, 1047, 1175, 1319, 1568][Math.floor(Math.random()*5)];
@@ -758,7 +758,7 @@ function playBgm(type) {
       osc.start(t); osc.stop(t + 0.5);
       bgmNodes.push(osc);
       setTimeout(scheduleBird, (delay + 0.5) * 1000);
-    }
+    };
     scheduleBird();
   }
 
@@ -794,7 +794,7 @@ function playBgm(type) {
 
   else if (type === 'bowl') {
     // シンギングボウル: 432Hz サイン波 + 倍音 + エンベロープ繰り返し
-    function strike() {
+    const strike = () => {
       if (bgmGain !== master) return;
       [432, 864, 1296].forEach((freq, i) => {
         const osc = ctx.createOscillator();
@@ -809,7 +809,7 @@ function playBgm(type) {
         bgmNodes.push(osc);
       });
       setTimeout(strike, 7000);
-    }
+    };
     strike();
   }
 }
