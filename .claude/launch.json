@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "breathsync",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-Command", "$l=[System.Net.HttpListener]::new();$l.Prefixes.Add('http://localhost:8742/');$l.Start();while($l.IsListening){$c=$l.GetContext();$p=$c.Request.Url.LocalPath;if($p -eq '/'){$p='/index.html'};$f=Join-Path 'C:\\Users\\m0t0s\\OneDrive\\デスクトップ\\breathsync' $p.TrimStart('/');if(Test-Path $f){$b=[System.IO.File]::ReadAllBytes($f);$ext=[System.IO.Path]::GetExtension($f);$ct=@{'.html'='text/html; charset=utf-8';'.js'='application/javascript';'.json'='application/json';'.png'='image/png'}[$ext];if($ct){$c.Response.ContentType=$ct};$c.Response.OutputStream.Write($b,0,$b.Length)}else{$c.Response.StatusCode=404};$c.Response.Close()}"],
+      "port": 8742
+    }
+  ]
+}
