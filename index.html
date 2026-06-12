@@ -47,11 +47,10 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <!-- ===== SUPABASE 設定 ===== -->
-<!-- SETUP.md を読んで YOUR_SUPABASE_URL と YOUR_SUPABASE_ANON_KEY を差し替えてください -->
 <script>
 window.SUPABASE_URL  = 'https://kktopxcpmawczyodhikf.supabase.co';
 window.SUPABASE_KEY  = 'sb_publishable_cB2TrncgbP-yEu0pMrfnXQ_XUnU_Ycl';
-// Stripe の Pro プラン決済リンク（SETUP.md 参照）
+// Stripe の決済リンク（SETUP.md 参照）
 window.STRIPE_LINK_MONTHLY = 'YOUR_STRIPE_MONTHLY_LINK';
 window.STRIPE_LINK_YEARLY  = 'YOUR_STRIPE_YEARLY_LINK';
 </script>
@@ -64,8 +63,9 @@ a{color:inherit;text-decoration:none}
 
 /* ── Tokens ── */
 :root{
-  --g:#1D9E75;--g2:#0F6E56;--g3:#085041;
+  --g:#1D9E75;--g2:#0F6E56;
   --g-bg:#E1F5EE;--g-mid:#9FE1CB;
+  --g-soft:rgba(29,158,117,.13);
   --bg:#F5F5F0;--surface:#FFFFFF;--surface2:#F0EEEA;
   --border:rgba(0,0,0,.10);--border2:rgba(0,0,0,.18);
   --t:#1A1A18;--t2:#6B6B66;--t3:#9E9E99;
@@ -106,14 +106,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 .topbar h2{font-size:18px;font-weight:600;color:var(--t);}
 .badge{font-size:11px;font-weight:600;border-radius:100px;padding:3px 10px;letter-spacing:.02em;}
 .badge-green{background:var(--g-bg);color:var(--g2);}
-.badge-gold{background:var(--amber-bg);color:var(--amber);}
 .badge-live{background:var(--g);color:#fff;}
+.drops-pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--blue);background:var(--blue-bg);border-radius:100px;padding:4px 12px;}
 
 /* ── Card ── */
 .card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin:0 12px 10px;overflow:hidden;}
 .card-head{padding:12px 14px 0;font-size:11px;color:var(--t2);letter-spacing:.05em;text-transform:uppercase;}
 .card-body{padding:10px 14px 14px;}
-.card-sep{height:.5px;background:var(--border);margin:0 14px;}
 
 /* ── Bottom nav ── */
 nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-bottom));background:var(--surface);border-top:.5px solid var(--border);display:flex;align-items:flex-start;padding-top:4px;z-index:100;}
@@ -121,11 +120,9 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 .nav-btn svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .nav-btn.active{color:var(--g);}
 .nav-btn .nb{position:relative;display:inline-block;}
-.nav-dot{position:absolute;top:-1px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface);}
+.nav-dot{position:absolute;top:-1px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface);display:none;}
 
-/* ════════════════════════
-   HOME
-════════════════════════ */
+/* ════════ HOME ════════ */
 .live-bar{display:flex;align-items:center;gap:7px;padding:4px 16px 10px;font-size:13px;color:var(--t2);}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--g);animation:pd 2s infinite;}
 @keyframes pd{0%,100%{opacity:1}50%{opacity:.25}}
@@ -134,22 +131,34 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 .mp{flex:1;font-size:11px;font-weight:500;padding:6px 0;border:.5px solid var(--border);border-radius:var(--radius-sm);color:var(--t2);transition:all .15s;}
 .mp.active{background:var(--g-bg);color:var(--g2);border-color:var(--g-mid);}
 
-.stage{display:flex;flex-direction:column;align-items:center;padding:4px 0 16px;}
-.rings{position:relative;width:210px;height:210px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.ring{position:absolute;border-radius:50%;border:1.5px solid rgba(29,158,117,.13);}
+.stage{display:flex;flex-direction:column;align-items:center;padding:8px 0 16px;position:relative;margin:0 12px 6px;border-radius:var(--radius);overflow:hidden;}
+.stage>:not(.photo-layer){position:relative;z-index:1;}
+.photo-layer{position:absolute;inset:0;z-index:0;display:none;}
+.photo-layer.on{display:block;}
+.photo-layer img{width:100%;height:100%;object-fit:cover;}
+.photo-dim{position:absolute;inset:0;background:rgba(0,0,0,.38);}
+.stage.photo-on .bphase,.stage.photo-on .bsub{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6);}
+.stage.photo-on .start-btn{background:rgba(255,255,255,.95);color:var(--g2);border-color:#fff;}
+
+.rings{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ring{position:absolute;border-radius:50%;border:1.5px solid var(--g-soft);}
 .ring:nth-child(1){inset:0;}
 .ring:nth-child(2){inset:15%;}
-.ripple{position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(29,158,117,.13);z-index:1;}
+.ripple{position:absolute;width:115px;height:115px;border-radius:50%;background:var(--g-soft);z-index:1;}
 @keyframes rout{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.1);opacity:0}}
-.circle{width:120px;height:120px;border-radius:50%;background:var(--g);z-index:2;position:relative;display:flex;align-items:center;justify-content:center;transition:transform .12s linear;}
+.circle{width:115px;height:115px;border-radius:50%;background:var(--g);z-index:2;position:relative;display:flex;align-items:center;justify-content:center;transition:transform .12s linear;}
 .clabel{font-size:12px;font-weight:600;color:#fff;letter-spacing:.06em;pointer-events:none;}
 
-.bphase{font-size:22px;font-weight:600;color:var(--t);margin-top:12px;}
+.bphase{font-size:21px;font-weight:600;color:var(--t);margin-top:12px;}
 .bsub{font-size:13px;color:var(--t2);margin-top:3px;min-height:20px;}
-.bprog{width:180px;height:3px;background:var(--surface2);border-radius:2px;margin:12px 0 16px;overflow:hidden;}
+.bprog{width:180px;height:3px;background:var(--surface2);border-radius:2px;margin:10px 0 14px;overflow:hidden;}
 .bprog-fill{height:100%;background:var(--g);border-radius:2px;width:0%;transition:width .25s linear;}
-.start-btn{border:1.5px solid var(--g);border-radius:100px;color:var(--g);font-size:15px;font-weight:600;padding:10px 44px;transition:all .15s;}
+.start-btn{border:1.5px solid var(--g);border-radius:100px;color:var(--g);font-size:15px;font-weight:600;padding:9px 44px;transition:all .15s;background:var(--surface);}
 .start-btn:hover,.start-btn:active{background:var(--g);color:#fff;}
+
+.tool-row{display:flex;gap:6px;padding:0 12px 8px;}
+.mini-pill{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:6px 12px;border:.5px solid var(--border);border-radius:100px;color:var(--t2);background:var(--surface);}
+.mini-pill.on{background:var(--g-bg);color:var(--g2);border-color:var(--g-mid);}
 
 /* ── BGM strip ── */
 .bgm-section{padding:0 12px 10px;}
@@ -164,106 +173,76 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 .bgm-btn .bi{font-size:18px;}
 .bgm-btn .bn{font-size:10px;color:var(--t2);white-space:nowrap;}
 .bgm-btn.active .bn{color:var(--g2);font-weight:600;}
-.bgm-btn .bpro{font-size:9px;color:var(--amber);font-weight:600;}
-/* BGM upsell banner */
-.bgm-upsell{background:var(--amber-bg);border:.5px solid var(--amber);border-radius:var(--radius-sm);padding:10px 12px;margin:0 12px 10px;display:none;align-items:center;gap:8px;}
-.bgm-upsell.show{display:flex;}
-.bgm-upsell-text{flex:1;font-size:12px;color:var(--amber);}
-.bgm-upsell-btn{font-size:12px;font-weight:700;color:var(--amber);white-space:nowrap;}
 
 .mini-stats{display:flex;gap:8px;padding:0 12px 4px;}
 .ms{flex:1;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;}
 .ms-val{font-size:18px;font-weight:600;color:var(--t);}
 .ms-lbl{font-size:10px;color:var(--t2);margin-top:2px;letter-spacing:.03em;}
 
-/* ════════════════════════
-   FRIENDS
-════════════════════════ */
+/* ════════ FRIENDS ════════ */
 .fi{display:flex;align-items:center;gap:10px;padding:11px 0;}
 .fi+.fi{border-top:.5px solid var(--border);}
-.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;}
-.av-g{background:var(--g-bg);color:var(--g2);}
-.av-b{background:var(--blue-bg);color:var(--blue);}
-.av-c{background:var(--coral-bg);color:var(--coral);}
-.av-p{background:var(--purple-bg);color:var(--purple);}
-.av-a{background:var(--amber-bg);color:var(--amber);}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;background:var(--g-bg);color:var(--g2);}
 .fi-info{flex:1;min-width:0;}
 .fi-name{font-size:14px;font-weight:500;color:var(--t);}
 .fi-status{font-size:12px;color:var(--t2);margin-top:1px;}
 .pip{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g);margin-right:4px;vertical-align:1px;}
 .fa{font-size:12px;font-weight:600;color:var(--g);flex-shrink:0;}
 .fa:hover{opacity:.7;}
+.fa.danger{color:var(--red);}
 .invite-row{border:.5px dashed var(--border2);border-radius:var(--radius-sm);padding:12px;text-align:center;font-size:13px;color:var(--t2);margin-top:6px;width:100%;}
 .invite-row:hover{background:var(--surface2);}
-
-.challenge-item{display:flex;align-items:center;gap:10px;padding:10px 0;}
-.ch-icon{width:40px;height:40px;border-radius:50%;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.code-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0;}
+.code-val{font-family:ui-monospace,SFMono-Regular,monospace;font-size:22px;font-weight:700;letter-spacing:.18em;color:var(--g2);background:var(--g-bg);padding:6px 16px;border-radius:10px;}
+.empty-box{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:10px 0;font-size:13px;color:var(--t2);}
 .ch-bar-wrap{height:4px;background:var(--surface2);border-radius:2px;margin-top:5px;overflow:hidden;}
-.ch-bar{height:100%;background:var(--purple);border-radius:2px;}
+.ch-bar{height:100%;background:var(--g);border-radius:2px;transition:width .4s;}
 
-/* ════════════════════════
-   ROOMS
-════════════════════════ */
-.room{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin:0 12px 10px;padding:14px 16px;transition:background .1s;}
+/* ════════ ROOMS ════════ */
+.room{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin:0 12px 10px;padding:14px 16px;transition:background .1s;text-align:left;width:calc(100% - 24px);}
 .room:hover{background:var(--surface2);}
-.room.pro{border-color:var(--g-mid);}
 .rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
 .rname{font-size:15px;font-weight:600;color:var(--t);}
 .rdesc{font-size:13px;color:var(--t2);margin-bottom:8px;}
-.rtag{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border-radius:100px;}
-.rtag-live{background:var(--g-bg);color:var(--g2);}
-.rtag-lock{background:var(--surface2);color:var(--t2);}
+.rtag{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border-radius:100px;background:var(--g-bg);color:var(--g2);}
 
-/* ════════════════════════
-   STATS
-════════════════════════ */
+/* ════════ STATS ════════ */
 .streak-hero{background:var(--g);border-radius:var(--radius);margin:0 12px 10px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
-.sh-left{display:flex;flex-direction:column;}
 .sh-num{font-size:40px;font-weight:700;color:#fff;line-height:1;}
-.sh-lbl{font-size:12px;color:rgba(255,255,255,.8);margin-top:4px;}
+.sh-lbl{font-size:12px;color:rgba(255,255,255,.85);margin-top:4px;}
 .sh-right{font-size:44px;}
-.chart-wrap{padding:2px 0 8px;}
 .chart-bars{display:flex;align-items:flex-end;gap:5px;height:72px;}
-.bar{flex:1;background:var(--g-mid);border-radius:3px 3px 0 0;opacity:.6;min-height:4px;transition:height .4s ease;}
+.bar{flex:1;background:var(--g-mid);border-radius:3px 3px 0 0;opacity:.6;min-height:3px;transition:height .4s ease;}
 .bar.today{background:var(--g);opacity:1;}
 .chart-labels{display:flex;gap:5px;margin-top:5px;}
 .cl{flex:1;font-size:10px;color:var(--t2);text-align:center;}
 .cl.today{color:var(--g);font-weight:600;}
-
 .ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.ach{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 6px;text-align:center;transition:transform .1s;}
-.ach:hover{transform:scale(1.04);}
+.ach{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 6px;text-align:center;}
 .ach-icon{font-size:24px;}
 .ach-name{font-size:10px;color:var(--t2);margin-top:4px;line-height:1.3;}
 .ach.locked{opacity:.3;filter:grayscale(1);}
-
 .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 12px 10px;}
 .sg{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;}
 .sg-val{font-size:20px;font-weight:600;color:var(--t);}
 .sg-lbl{font-size:10px;color:var(--t2);margin-top:2px;}
 
-/* ════════════════════════
-   PROFILE
-════════════════════════ */
+/* ════════ PROFILE ════════ */
 .prof-head{display:flex;flex-direction:column;align-items:center;padding:20px 16px 14px;}
-.prof-av{width:76px;height:76px;border-radius:50%;background:var(--g-bg);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--g2);margin-bottom:10px;border:2px solid var(--g-mid);}
+.prof-av{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
 .prof-name{font-size:19px;font-weight:600;color:var(--t);}
 .prof-sub{font-size:13px;color:var(--t2);margin-top:3px;}
-
-.plan-card{background:var(--g);border-radius:var(--radius);margin:0 12px 10px;padding:18px 18px 16px;overflow:hidden;position:relative;}
+.plan-card{background:var(--g);border-radius:var(--radius);margin:0 12px 10px;padding:18px 18px 16px;}
 .plan-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:3px;}
-.plan-price{font-size:13px;color:rgba(255,255,255,.8);margin-bottom:14px;}
+.plan-price{font-size:13px;color:rgba(255,255,255,.85);margin-bottom:14px;}
 .plan-feats{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
 .pf{font-size:13px;color:#fff;display:flex;align-items:center;gap:8px;}
 .pf-check{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
 .plan-btns{display:flex;gap:8px;}
 .plan-btn{flex:1;background:#fff;color:var(--g2);border-radius:100px;padding:10px 0;font-size:14px;font-weight:700;text-align:center;transition:opacity .15s;}
 .plan-btn:hover{opacity:.88;}
-.plan-btn.yearly{background:rgba(255,255,255,.85);position:relative;}
-.plan-btn.yearly::after{content:'37%OFF';position:absolute;top:-8px;right:-4px;background:var(--amber-bg);color:var(--amber);font-size:9px;font-weight:700;padding:2px 6px;border-radius:100px;}
-
 .menu-list{overflow:hidden;}
-.mi{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;transition:background .1s;}
+.mi{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;transition:background .1s;cursor:pointer;}
 .mi+.mi{border-top:.5px solid var(--border);}
 .mi:hover{background:var(--surface2);}
 .mi-lbl{font-size:14px;color:var(--t);}
@@ -280,6 +259,21 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 .modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:430px;padding:20px 18px calc(20px + var(--safe-bottom));max-height:80vh;overflow-y:auto;}
 .modal h3{font-size:17px;font-weight:600;margin-bottom:12px;color:var(--t);}
 .modal-close{float:right;font-size:22px;color:var(--t2);line-height:1;margin-top:-2px;}
+.modal input[type=text],.modal input[type=time]{width:100%;font-size:16px;padding:10px 12px;border:.5px solid var(--border2);border-radius:10px;background:var(--surface2);color:var(--t);}
+.modal-btn{width:100%;padding:12px;background:var(--g);color:#fff;border-radius:10px;font-size:14px;font-weight:600;margin-top:12px;}
+.modal-btn.ghost{background:var(--surface2);color:var(--t);}
+.modal-btn.danger{background:var(--red);}
+.opt-list{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{padding:12px;border:.5px solid var(--border2);border-radius:10px;text-align:left;font-size:14px;color:var(--t);background:var(--surface2);}
+.opt-btn.sel{border-color:var(--g);background:var(--g-bg);color:var(--g2);font-weight:600;}
+.swatches{display:flex;gap:14px;padding:6px 0;justify-content:center;}
+.swatch{width:42px;height:42px;border-radius:50%;border:3px solid transparent;}
+.swatch.sel{border-color:var(--t);}
+.fuu-box{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:6px 0 2px;}
+.fuu-talk{font-size:13px;color:var(--t2);line-height:1.6;}
+.bonus-num{font-size:28px;font-weight:700;color:var(--g2);}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fuu-bounce{animation:bounce 1.6s ease-in-out infinite;}
 
 /* ── Util ── */
 .sec-title{font-size:11px;color:var(--t2);letter-spacing:.05em;padding:8px 16px 4px;text-transform:uppercase;}
@@ -292,157 +286,94 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 <section class="screen active" id="scr-home" role="main" aria-label="ホーム">
   <div class="topbar">
     <h1>BreathSync</h1>
-    <span class="badge badge-green" id="plan-badge">すべて無料</span>
+    <span class="drops-pill">💧 <span id="drops-val">0</span></span>
   </div>
   <div class="live-bar">
     <div class="live-dot" aria-hidden="true"></div>
-    <span id="live-count">接続中...</span>
+    <span id="live-count">…</span>
   </div>
-  <div class="mode-strip" role="group" aria-label="呼吸パターン">
-    <button class="mp active" onclick="setBreathMode('478',this)" aria-pressed="true">4-7-8</button>
-    <button class="mp" onclick="setBreathMode('box',this)" aria-pressed="false">ボックス</button>
-    <button class="mp" onclick="setBreathMode('calm',this)" aria-pressed="false">リラックス</button>
+  <div class="mode-strip" role="group">
+    <button class="mp" id="mp-478" onclick="setBreathMode('478',this)">4-7-8</button>
+    <button class="mp" id="mp-box" onclick="setBreathMode('box',this)" data-i18n="mode_box">ボックス</button>
+    <button class="mp" id="mp-calm" onclick="setBreathMode('calm',this)" data-i18n="mode_calm">リラックス</button>
   </div>
-  <div class="stage">
+  <div class="stage" id="stage">
+    <div class="photo-layer" id="photo-layer"><img id="photo-img" alt=""><div class="photo-dim"></div></div>
     <div class="rings" aria-hidden="true">
       <div class="ring"></div>
       <div class="ring"></div>
       <div class="ripple" id="ripple"></div>
-      <div class="circle" id="circle">
-        <span class="clabel" id="clabel">はじめる</span>
-      </div>
+      <div class="circle" id="circle"><span class="clabel" id="clabel"></span></div>
     </div>
-    <div class="bphase" id="bphase" aria-live="polite">深呼吸で心を整えよう</div>
+    <div class="bphase" id="bphase" aria-live="polite"></div>
     <div class="bsub" id="bsub"></div>
     <div class="bprog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <div class="bprog-fill" id="bprog-fill"></div>
     </div>
-    <button class="start-btn" id="start-btn" onclick="toggleBreath()">スタート</button>
+    <button class="start-btn" id="start-btn" onclick="toggleBreath()"></button>
   </div>
-  <!-- BGM selector -->
+  <div class="tool-row">
+    <button class="mini-pill" id="photo-toggle" onclick="togglePhoto()">📷 <span data-i18n="photo_toggle">写真と呼吸</span></button>
+    <button class="mini-pill" onclick="pickPhoto()">🖼 <span data-i18n="photo_pick">写真を選ぶ</span></button>
+  </div>
   <div class="bgm-section">
     <div class="bgm-label">
       <span>BGM</span>
-      <div class="bgm-vol" id="bgm-vol-wrap">
+      <div class="bgm-vol">
         <span>🔈</span>
         <input type="range" min="0" max="100" value="60" id="bgm-vol" aria-label="音量" oninput="setBgmVolume(this.value)">
         <span>🔊</span>
       </div>
     </div>
-    <div class="bgm-scroll" role="group" aria-label="BGM選択">
-      <button class="bgm-btn active" onclick="selectBgm('none',this)" aria-pressed="true">
-        <span class="bi">🔇</span><span class="bn">なし</span>
-      </button>
-      <button class="bgm-btn" onclick="selectBgm('tone',this)" aria-pressed="false">
-        <span class="bi">🎵</span><span class="bn">トーン</span>
-      </button>
-      <button class="bgm-btn" onclick="selectBgm('rain',this)" aria-pressed="false">
-        <span class="bi">🌧️</span><span class="bn">雨音</span>
-      </button>
-      <button class="bgm-btn" onclick="selectBgm('ocean',this)" aria-pressed="false">
-        <span class="bi">🌊</span><span class="bn">波の音</span>
-      </button>
-      <button class="bgm-btn" onclick="selectBgm('forest',this)" aria-pressed="false">
-        <span class="bi">🌲</span><span class="bn">森の音</span>
-      </button>
-      <button class="bgm-btn" onclick="selectBgm('white',this)" aria-pressed="false">
-        <span class="bi">🌫️</span><span class="bn">ホワイト</span>
-      </button>
-      <button class="bgm-btn" onclick="selectBgm('binaural',this)" aria-pressed="false">
-        <span class="bi">🧠</span><span class="bn">バイノーラル</span>
-      </button>
-      <button class="bgm-btn" onclick="selectBgm('bowl',this)" aria-pressed="false">
-        <span class="bi">🪬</span><span class="bn">ボウル</span>
-      </button>
+    <div class="bgm-scroll" role="group">
+      <button class="bgm-btn" data-bgm="none" onclick="selectBgm('none',this)"><span class="bi">🔇</span><span class="bn" data-i18n="bgm_none">なし</span></button>
+      <button class="bgm-btn" data-bgm="tone" onclick="selectBgm('tone',this)"><span class="bi">🎵</span><span class="bn" data-i18n="bgm_tone">トーン</span></button>
+      <button class="bgm-btn" data-bgm="rain" onclick="selectBgm('rain',this)"><span class="bi">🌧️</span><span class="bn" data-i18n="bgm_rain">雨音</span></button>
+      <button class="bgm-btn" data-bgm="ocean" onclick="selectBgm('ocean',this)"><span class="bi">🌊</span><span class="bn" data-i18n="bgm_ocean">波の音</span></button>
+      <button class="bgm-btn" data-bgm="forest" onclick="selectBgm('forest',this)"><span class="bi">🌲</span><span class="bn" data-i18n="bgm_forest">森の音</span></button>
+      <button class="bgm-btn" data-bgm="white" onclick="selectBgm('white',this)"><span class="bi">🌫️</span><span class="bn" data-i18n="bgm_white">ホワイト</span></button>
+      <button class="bgm-btn" data-bgm="binaural" onclick="selectBgm('binaural',this)"><span class="bi">🧠</span><span class="bn" data-i18n="bgm_binaural">バイノーラル</span></button>
+      <button class="bgm-btn" data-bgm="bowl" onclick="selectBgm('bowl',this)"><span class="bi">🪬</span><span class="bn" data-i18n="bgm_bowl">ボウル</span></button>
+      <button class="bgm-btn" data-bgm="custom" onclick="selectBgm('custom',this)"><span class="bi">🎧</span><span class="bn" data-i18n="bgm_custom">マイ音楽</span></button>
     </div>
   </div>
-
   <div class="mini-stats">
-    <div class="ms"><div class="ms-val" id="ms-today">0</div><div class="ms-lbl">今日のセッション</div></div>
-    <div class="ms"><div class="ms-val" id="ms-streak">7</div><div class="ms-lbl">🔥 連続日数</div></div>
-    <div class="ms"><div class="ms-val" id="ms-time">0:00</div><div class="ms-lbl">今日の時間</div></div>
+    <div class="ms"><div class="ms-val" id="ms-today">0</div><div class="ms-lbl" data-i18n="ms_today">今日のセッション</div></div>
+    <div class="ms"><div class="ms-val" id="ms-streak">0</div><div class="ms-lbl" data-i18n="ms_streak">🔥 連続日数</div></div>
+    <div class="ms"><div class="ms-val" id="ms-time">0:00</div><div class="ms-lbl" data-i18n="ms_time">今日の時間</div></div>
   </div>
 </section>
 
 <!-- ════ FRIENDS ════ -->
 <section class="screen" id="scr-friends" aria-label="フレンド">
   <div class="topbar">
-    <h2>フレンド</h2>
-    <span class="badge badge-green" id="online-badge">3 オンライン</span>
+    <h2 data-i18n="friends_title">フレンド</h2>
+    <span class="badge badge-green" id="online-badge"></span>
   </div>
-  <div class="sec-title">今すぐ一緒に呼吸</div>
-  <div class="card">
-    <div class="card-body" id="friends-online">
-      <div class="fi">
-        <div class="av av-b">YK</div>
-        <div class="fi-info">
-          <div class="fi-name">山田 健太</div>
-          <div class="fi-status"><span class="pip"></span>呼吸中 — 2分目</div>
-        </div>
-        <button class="fa" onclick="joinFriend('山田 健太')">参加 →</button>
-      </div>
-      <div class="fi">
-        <div class="av av-p">SM</div>
-        <div class="fi-info">
-          <div class="fi-name">鈴木 美咲</div>
-          <div class="fi-status"><span class="pip"></span>オンライン</div>
-        </div>
-        <button class="fa" onclick="inviteFriend('鈴木 美咲')">誘う →</button>
-      </div>
-      <div class="fi">
-        <div class="av av-c">TN</div>
-        <div class="fi-info">
-          <div class="fi-name">田中 直人</div>
-          <div class="fi-status"><span class="pip"></span>オンライン</div>
-        </div>
-        <button class="fa" onclick="inviteFriend('田中 直人')">誘う →</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="sec-title">最近の仲間</div>
+  <div class="sec-title" data-i18n="my_code">あなたのフレンドコード</div>
   <div class="card">
     <div class="card-body">
-      <div class="fi">
-        <div class="av av-a">AW</div>
-        <div class="fi-info">
-          <div class="fi-name">渡辺 彩</div>
-          <div class="fi-status">1時間前にセッション完了</div>
-        </div>
-        <button class="fa" onclick="toast('メッセージを送りました 📩')">メッセージ</button>
+      <div class="code-row">
+        <span class="code-val" id="my-code"></span>
+        <button class="fa" onclick="copyMyCode()" data-i18n="copy">コピー</button>
       </div>
-      <div class="fi">
-        <div class="av av-g">HM</div>
-        <div class="fi-info">
-          <div class="fi-name">松本 浩二</div>
-          <div class="fi-status">昨日 · 🔥 42日連続</div>
-        </div>
-        <button class="fa" onclick="toast('👏 拍手を送りました！')">拍手 👏</button>
-      </div>
-      <button class="invite-row" onclick="shareInvite()">＋ 友達を招待する</button>
+      <button class="invite-row" onclick="shareInvite()" data-i18n="share_invite">＋ 招待リンクをシェア</button>
     </div>
   </div>
-
-  <div class="sec-title">グループチャレンジ</div>
+  <div class="sec-title" data-i18n="friends_list">フレンド一覧</div>
+  <div class="card">
+    <div class="card-body" id="friends-list"></div>
+  </div>
+  <div class="sec-title" data-i18n="challenge">ウィークリーチャレンジ</div>
   <div class="card">
     <div class="card-body">
-      <div class="challenge-item">
-        <div class="ch-icon">🏆</div>
-        <div style="flex:1">
-          <div class="fi-name">30日チャレンジ</div>
-          <div class="fi-status">5人参加中 · あと23日</div>
-          <div class="ch-bar-wrap"><div class="ch-bar" style="width:23%"></div></div>
+      <div class="fi" style="border:none">
+        <div class="av">🏆</div>
+        <div class="fi-info">
+          <div class="fi-name" data-i18n="ch_name">今週30分チャレンジ</div>
+          <div class="fi-status" id="ch-status"></div>
+          <div class="ch-bar-wrap"><div class="ch-bar" id="ch-bar" style="width:0%"></div></div>
         </div>
-        <button class="fa" onclick="toast('チャレンジに参加しました！')">参加</button>
-      </div>
-      <div class="challenge-item">
-        <div class="ch-icon">🌊</div>
-        <div style="flex:1">
-          <div class="fi-name">毎朝チャレンジ</div>
-          <div class="fi-status">12人参加中 · あと18日</div>
-          <div class="ch-bar-wrap"><div class="ch-bar" style="width:40%;background:var(--blue)"></div></div>
-        </div>
-        <button class="fa" onclick="toast('チャレンジに参加しました！')">参加</button>
       </div>
     </div>
   </div>
@@ -450,180 +381,130 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 
 <!-- ════ ROOMS ════ -->
 <section class="screen" id="scr-rooms" aria-label="ルーム">
-  <div class="topbar"><h2>ルーム</h2></div>
-  <p style="padding:0 16px 10px;font-size:13px;color:var(--t2)">世界中の人とリアルタイムで一緒に呼吸できます。</p>
-
-  <button class="room" onclick="joinRoom('朝のルーティン',241)">
-    <div class="rh"><span class="rname">🌅 朝のルーティン</span><span class="badge badge-live">241人</span></div>
-    <div class="rdesc">毎朝 6〜8時開催。一日を穏やかにスタート。</div>
-    <span class="rtag rtag-live">● ライブ</span>
+  <div class="topbar"><h2 data-i18n="rooms_title">ルーム</h2></div>
+  <p style="padding:0 16px 10px;font-size:13px;color:var(--t2)" data-i18n="rooms_desc">テーマを選んで、世界中の人と一緒に呼吸しましょう。</p>
+  <button class="room" onclick="joinRoom('r1')">
+    <div class="rh"><span class="rname" data-i18n="r1n">🌅 朝のルーティン</span></div>
+    <div class="rdesc" data-i18n="r1d">一日を穏やかにスタート。</div>
+    <span class="rtag" data-i18n="live">● ライブ</span>
   </button>
-
-  <button class="room" onclick="joinRoom('仕事の合間に',87)">
-    <div class="rh"><span class="rname">💼 仕事の合間に</span><span class="badge badge-live">87人</span></div>
-    <div class="rdesc">集中力リセット。5分だけ立ち止まろう。</div>
-    <span class="rtag rtag-live">● ライブ</span>
+  <button class="room" onclick="joinRoom('r2')">
+    <div class="rh"><span class="rname" data-i18n="r2n">💼 仕事の合間に</span></div>
+    <div class="rdesc" data-i18n="r2d">集中力リセット。5分だけ立ち止まろう。</div>
+    <span class="rtag" data-i18n="live">● ライブ</span>
   </button>
-
-  <button class="room" onclick="joinRoom('ワールドルーム',1423)">
-    <div class="rh"><span class="rname">🌍 ワールドルーム</span><span class="badge badge-live">1,423人</span></div>
-    <div class="rdesc">世界中の人と同時接続。言語・文化不問。</div>
-    <span class="rtag rtag-live">● ライブ</span>
+  <button class="room" onclick="joinRoom('world')">
+    <div class="rh"><span class="rname" data-i18n="rwn">🌍 ワールドルーム</span></div>
+    <div class="rdesc" data-i18n="rwd">世界中の人と同時接続。言語・文化不問。</div>
+    <span class="rtag" data-i18n="live">● ライブ</span>
   </button>
-
-  <button class="room" onclick="joinRoom('深夜の静けさ',312)">
-    <div class="rh"><span class="rname">🌙 深夜の静けさ</span><span class="badge badge-live">312人</span></div>
-    <div class="rdesc">眠れない夜に。ガイド音声つき入眠セッション。</div>
-    <span class="rtag rtag-live">● ライブ</span>
+  <button class="room" onclick="joinRoom('r4')">
+    <div class="rh"><span class="rname" data-i18n="r4n">🌙 深夜の静けさ</span></div>
+    <div class="rdesc" data-i18n="r4d">眠れない夜に。ゆっくり入眠セッション。</div>
+    <span class="rtag" data-i18n="live">● ライブ</span>
   </button>
-
-  <button class="room" onclick="joinRoom('集中フォーカス',156)">
-    <div class="rh"><span class="rname">🧘 集中フォーカス</span><span class="badge badge-live">156人</span></div>
-    <div class="rdesc">25分ポモドーロ式。試験・締め切り前に。</div>
-    <span class="rtag rtag-live">● ライブ</span>
-  </button>
-
-  <button class="room" onclick="joinRoom('ストレス解放',98)">
-    <div class="rh"><span class="rname">💆 ストレス解放</span><span class="badge badge-live">98人</span></div>
-    <div class="rdesc">セラピスト監修の10分プログラム。</div>
-    <span class="rtag rtag-live">● ライブ</span>
+  <button class="room" onclick="joinRoom('r5')">
+    <div class="rh"><span class="rname" data-i18n="r5n">🧘 集中フォーカス</span></div>
+    <div class="rdesc" data-i18n="r5d">試験・締め切り前のリセットに。</div>
+    <span class="rtag" data-i18n="live">● ライブ</span>
   </button>
 </section>
 
 <!-- ════ STATS ════ -->
 <section class="screen" id="scr-stats" aria-label="記録">
-  <div class="topbar"><h2>記録</h2></div>
-
-  <div class="streak-hero" aria-label="7日連続達成中">
-    <div class="sh-left">
-      <div class="sh-num" id="streak-num">7</div>
-      <div class="sh-lbl">日連続達成中 🔥</div>
+  <div class="topbar"><h2 data-i18n="stats_title">記録</h2></div>
+  <div class="streak-hero">
+    <div>
+      <div class="sh-num" id="streak-num">0</div>
+      <div class="sh-lbl" data-i18n="streak_lbl">日連続達成中 🔥</div>
     </div>
-    <div class="sh-right">🏅</div>
+    <div class="sh-right" id="streak-fuu">🏅</div>
   </div>
-
   <div class="card">
-    <div class="card-head">今週の呼吸時間（分）</div>
+    <div class="card-head" data-i18n="chart_title">今週の呼吸時間（分）</div>
     <div class="card-body">
-      <div class="chart-wrap">
-        <div class="chart-bars" id="chart-bars">
-          <div class="bar" style="height:40%"></div>
-          <div class="bar" style="height:60%"></div>
-          <div class="bar" style="height:35%"></div>
-          <div class="bar" style="height:75%"></div>
-          <div class="bar" style="height:55%"></div>
-          <div class="bar" style="height:88%"></div>
-          <div class="bar today" style="height:50%" id="chart-today"></div>
-        </div>
-        <div class="chart-labels">
-          <div class="cl">月</div><div class="cl">火</div><div class="cl">水</div>
-          <div class="cl">木</div><div class="cl">金</div><div class="cl">土</div>
-          <div class="cl today">今日</div>
-        </div>
-      </div>
+      <div class="chart-bars" id="chart-bars"></div>
+      <div class="chart-labels" id="chart-labels"></div>
     </div>
   </div>
-
-  <div class="sec-title">実績バッジ</div>
+  <div class="sec-title" data-i18n="badges">実績バッジ</div>
   <div class="card">
-    <div class="card-body">
-      <div class="ach-grid">
-        <div class="ach" title="はじめの一歩"><div class="ach-icon">🌱</div><div class="ach-name">はじめの一歩</div></div>
-        <div class="ach" title="7日連続"><div class="ach-icon">🔥</div><div class="ach-name">7日連続</div></div>
-        <div class="ach" title="100回呼吸"><div class="ach-icon">🌊</div><div class="ach-name">100回呼吸</div></div>
-        <div class="ach" title="初コラボ"><div class="ach-icon">🤝</div><div class="ach-name">初コラボ</div></div>
-        <div class="ach locked" title="30日連続（未達成）"><div class="ach-icon">🏔️</div><div class="ach-name">30日連続</div></div>
-        <div class="ach locked" title="深夜の静寂（未達成）"><div class="ach-icon">🌙</div><div class="ach-name">深夜の静寂</div></div>
-        <div class="ach locked" title="PRO会員（未達成）"><div class="ach-icon">👑</div><div class="ach-name">PRO会員</div></div>
-        <div class="ach locked" title="世界ルーム（未達成）"><div class="ach-icon">🌍</div><div class="ach-name">世界ルーム</div></div>
-      </div>
-    </div>
+    <div class="card-body"><div class="ach-grid" id="ach-grid"></div></div>
   </div>
-
   <div class="stat-grid">
-    <div class="sg"><div class="sg-val" id="stat-sessions">0</div><div class="sg-lbl">総セッション</div></div>
-    <div class="sg"><div class="sg-val" id="stat-total">0:00</div><div class="sg-lbl">総呼吸時間</div></div>
-    <div class="sg"><div class="sg-val">12</div><div class="sg-lbl">一緒に呼吸した人</div></div>
+    <div class="sg"><div class="sg-val" id="stat-sessions">0</div><div class="sg-lbl" data-i18n="sg_sessions">総セッション</div></div>
+    <div class="sg"><div class="sg-val" id="stat-total">0:00</div><div class="sg-lbl" data-i18n="sg_total">総呼吸時間</div></div>
+    <div class="sg"><div class="sg-val" id="stat-friends">0</div><div class="sg-lbl" data-i18n="sg_friends">フレンド</div></div>
   </div>
 </section>
 
 <!-- ════ PROFILE ════ -->
 <section class="screen" id="scr-profile" aria-label="プロフィール">
   <div class="prof-head">
-    <div class="prof-av" aria-hidden="true">あ</div>
-    <div class="prof-name">あなた</div>
-    <div class="prof-sub" id="prof-plan-lbl">2024年1月から · すべての機能が無料</div>
+    <div class="prof-av" id="prof-fuu"></div>
+    <div class="prof-name" id="prof-name"></div>
+    <div class="prof-sub" data-i18n="prof_sub">すべての機能が無料</div>
   </div>
-
-  <div class="plan-card" id="plan-card">
-    <div class="plan-title">サポーターになる 🌿</div>
-    <div class="plan-price">BreathSync はずっと無料。気に入ったら支えてください。</div>
+  <div class="plan-card">
+    <div class="plan-title" data-i18n="sup_title">サポーターになる 🌿</div>
+    <div class="plan-price" data-i18n="sup_sub">BreathSync はずっと無料。気に入ったら支えてください。</div>
     <div class="plan-feats">
-      <div class="pf"><span class="pf-check">✓</span>サポーターバッジ（名前の横に 🌿 表示）</div>
-      <div class="pf"><span class="pf-check">✓</span>90日以上の詳細セッション履歴・エクスポート</div>
-      <div class="pf"><span class="pf-check">✓</span>オリジナル呼吸パターンを作成・保存（最大10個）</div>
-      <div class="pf"><span class="pf-check">✓</span>フレンドとのグループセッション（同時10人まで）</div>
-      <div class="pf"><span class="pf-check">✓</span>新機能への早期アクセス</div>
-      <div class="pf"><span class="pf-check">✓</span>開発チームへの直接フィードバック枠</div>
+      <div class="pf"><span class="pf-check">✓</span><span data-i18n="sup_f1">サポーターバッジ 🌿</span></div>
+      <div class="pf"><span class="pf-check">✓</span><span data-i18n="sup_f2">新機能への早期アクセス</span></div>
+      <div class="pf"><span class="pf-check">✓</span><span data-i18n="sup_f3">開発への直接フィードバック枠</span></div>
     </div>
     <div class="plan-btns">
-      <button class="plan-btn" onclick="openStripe('monthly')">月 ¥480 で支援</button>
-      <button class="plan-btn yearly" onclick="openStripe('yearly')">年 ¥3,800 で支援</button>
+      <button class="plan-btn" onclick="openStripe('monthly')" data-i18n="sup_m">月 ¥480 で支援</button>
+      <button class="plan-btn" onclick="openStripe('yearly')" data-i18n="sup_y">年 ¥3,800 で支援</button>
     </div>
   </div>
-
-  <div class="sec-title">設定</div>
+  <div class="sec-title" data-i18n="settings">設定</div>
   <div class="card menu-list">
-    <div class="mi" onclick="openModal('notify')">
-      <span class="mi-lbl">通知設定</span><span class="mi-val">毎朝 7:00 ›</span>
-    </div>
-    <div class="mi" onclick="openModal('pattern')">
-      <span class="mi-lbl">デフォルト呼吸パターン</span><span class="mi-val">4-7-8 ›</span>
-    </div>
-    <div class="mi" onclick="openModal('sound')">
-      <span class="mi-lbl">バックグラウンド音</span><span class="mi-val">雨音 ›</span>
-    </div>
-    <div class="mi" onclick="openModal('export')">
-      <span class="mi-lbl">データをエクスポート</span><span class="mi-val">›</span>
-    </div>
-    <div class="mi mi-danger" onclick="toast('ログアウトしました')">
-      <span class="mi-lbl">ログアウト</span>
-    </div>
+    <div class="mi" onclick="openModal('name')"><span class="mi-lbl" data-i18n="set_name">名前</span><span class="mi-val" id="val-name">›</span></div>
+    <div class="mi" onclick="openModal('lang')"><span class="mi-lbl" data-i18n="set_lang">言語 / Language</span><span class="mi-val" id="val-lang">›</span></div>
+    <div class="mi" onclick="openModal('theme')"><span class="mi-lbl" data-i18n="set_theme">テーマカラー</span><span class="mi-val" id="val-theme">›</span></div>
+    <div class="mi" onclick="openModal('notify')"><span class="mi-lbl" data-i18n="set_notify">リマインダー</span><span class="mi-val" id="val-notify">›</span></div>
+    <div class="mi" onclick="openModal('export')"><span class="mi-lbl" data-i18n="set_export">データをエクスポート</span><span class="mi-val">›</span></div>
+    <div class="mi mi-danger" onclick="openModal('reset')"><span class="mi-lbl" data-i18n="set_reset">データを初期化</span></div>
   </div>
 </section>
 
 <!-- ════ BOTTOM NAV ════ -->
-<nav aria-label="メインナビゲーション">
-  <button class="nav-btn active" id="nav-home" onclick="goTo('home')" aria-label="ホーム">
+<nav>
+  <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    ホーム
+    <span data-i18n="nav_home">ホーム</span>
   </button>
-  <button class="nav-btn" id="nav-friends" onclick="goTo('friends')" aria-label="フレンド">
+  <button class="nav-btn" id="nav-friends" onclick="goTo('friends')">
     <div class="nb">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span class="nav-dot" id="friends-dot" aria-label="新着通知"></span>
+      <span class="nav-dot" id="friends-dot"></span>
     </div>
-    フレンド
+    <span data-i18n="nav_friends">フレンド</span>
   </button>
-  <button class="nav-btn" id="nav-rooms" onclick="goTo('rooms')" aria-label="ルーム">
+  <button class="nav-btn" id="nav-rooms" onclick="goTo('rooms')">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    ルーム
+    <span data-i18n="nav_rooms">ルーム</span>
   </button>
-  <button class="nav-btn" id="nav-stats" onclick="goTo('stats')" aria-label="記録">
+  <button class="nav-btn" id="nav-stats" onclick="goTo('stats')">
     <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    記録
+    <span data-i18n="nav_stats">記録</span>
   </button>
-  <button class="nav-btn" id="nav-profile" onclick="goTo('profile')" aria-label="プロフィール">
+  <button class="nav-btn" id="nav-profile" onclick="goTo('profile')">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    プロフィール
+    <span data-i18n="nav_profile">プロフィール</span>
   </button>
 </nav>
+
+<!-- 隠しファイル入力 -->
+<input type="file" id="file-audio" accept="audio/*" style="display:none">
+<input type="file" id="file-photo" accept="image/*" style="display:none">
 
 <!-- Toast -->
 <div id="toast" role="status" aria-live="polite"></div>
 
 <!-- Modal -->
-<div id="modal-overlay" onclick="closeModal()" role="dialog" aria-modal="true" aria-label="設定">
+<div id="modal-overlay" onclick="closeModal()" role="dialog" aria-modal="true">
   <div class="modal" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeModal()" aria-label="閉じる">×</button>
     <h3 id="modal-title"></h3>
@@ -641,25 +522,301 @@ nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--s
 (() => {
 
 /* ══════════════════════════════
-   BGM ENGINE (Web Audio API)
+   STORE（localStorage 永続化）
 ══════════════════════════════ */
-const PRO_BGMS = new Set(['rain','ocean','forest','white','binaural','bowl']);
-let isPro = false; // サポーター課金後に true にする（機能制限には使わない）
-let currentBgm = 'none';
-let bgmVolume = 0.6;
-let audioCtx = null;
-let bgmNodes = []; // 停止対象ノード群
-let bgmGain = null;
+const genCode = () => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c = '';
+  for (let i = 0; i < 6; i++) c += chars[Math.floor(Math.random() * chars.length)];
+  return c;
+};
+const DEFAULTS = {
+  lang: (navigator.language || '').startsWith('ja') ? 'ja' : 'en',
+  theme: 'green', name: '', code: '',
+  reminder: '', remFired: '',
+  pattern: '478', bgm: 'none', vol: 60, photoOn: false,
+  history: {}, friends: [],
+  flags: { collab: false, world: false, night: false },
+  login: { last: '', streak: 0, drops: 0 },
+  welcomed: false
+};
+let S;
+try {
+  const raw = JSON.parse(localStorage.getItem('bs1') || 'null');
+  S = Object.assign({}, DEFAULTS, raw || {});
+  S.flags = Object.assign({}, DEFAULTS.flags, (raw && raw.flags) || {});
+  S.login = Object.assign({}, DEFAULTS.login, (raw && raw.login) || {});
+} catch (e) { S = Object.assign({}, DEFAULTS); }
+if (!S.code) S.code = genCode();
+const save = () => { try { localStorage.setItem('bs1', JSON.stringify(S)); } catch (e) {} };
+save();
+
+const dayKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const $ = id => document.getElementById(id);
+
+/* ══════════════════════════════
+   IndexedDB（音楽・写真ファイル保存）
+══════════════════════════════ */
+const idb = {
+  db: null,
+  open: () => new Promise((res, rej) => {
+    const r = indexedDB.open('breathsync', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('files');
+    r.onsuccess = () => { idb.db = r.result; res(); };
+    r.onerror = () => rej(r.error);
+  }),
+  put: (k, v) => new Promise((res, rej) => {
+    const tx = idb.db.transaction('files', 'readwrite');
+    tx.objectStore('files').put(v, k);
+    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+  }),
+  get: k => new Promise((res, rej) => {
+    const rq = idb.db.transaction('files', 'readonly').objectStore('files').get(k);
+    rq.onsuccess = () => res(rq.result); rq.onerror = () => rej(rq.error);
+  }),
+  clear: () => new Promise(res => {
+    const tx = idb.db.transaction('files', 'readwrite');
+    tx.objectStore('files').clear(); tx.oncomplete = res;
+  })
+};
+
+/* ══════════════════════════════
+   I18N（日本語 / English）
+══════════════════════════════ */
+const I18N = {
+  ja: {
+    mode_box:'ボックス', mode_calm:'リラックス',
+    phase_in:'吸って', phase_hold:'止めて', phase_out:'吐いて',
+    tagline:'深呼吸で心を整えよう', begin:'はじめる', done_lbl:'完了',
+    btn_start:'スタート', btn_stop:'終了', btn_again:'もう一度',
+    session_done:'セッション完了 ✓',
+    remaining: n => `残り ${n}`,
+    live_n: n => `${n.toLocaleString('ja-JP')} 人が今一緒に呼吸中`,
+    mode_name: m => ({'478':'4-7-8 呼吸','box':'ボックス呼吸','calm':'リラックス呼吸'})[m],
+    bgm_none:'なし', bgm_tone:'トーン', bgm_rain:'雨音', bgm_ocean:'波の音', bgm_forest:'森の音',
+    bgm_white:'ホワイト', bgm_binaural:'バイノーラル', bgm_bowl:'ボウル', bgm_custom:'マイ音楽',
+    photo_toggle:'写真と呼吸', photo_pick:'写真を選ぶ',
+    photo_set:'写真を設定しました 🖼', photo_need:'まず写真を選んでください',
+    audio_set:'マイ音楽を設定しました 🎧',
+    ms_today:'今日のセッション', ms_streak:'🔥 連続日数', ms_time:'今日の時間',
+    friends_title:'フレンド', my_code:'あなたのフレンドコード', friends_list:'フレンド一覧',
+    copy:'コピー', copied:'コピーしました！', share_invite:'＋ 招待リンクをシェア',
+    online_n: n => `${n} オンライン`,
+    online_now:'今オンライン', offline:'オフライン', join:'参加 →', remove:'削除',
+    add_friend:'＋ フレンドコードで追加',
+    no_friends:'まだフレンドがいません',
+    fuu_no_friends:'コードを交換して、いっしょに呼吸しよう！',
+    challenge:'ウィークリーチャレンジ', ch_name:'今週30分チャレンジ',
+    ch_status: (m, g) => `今週 ${m}分 / 目標 ${g}分`,
+    rooms_title:'ルーム', rooms_desc:'テーマを選んで、世界中の人と一緒に呼吸しましょう。',
+    r1n:'🌅 朝のルーティン', r1d:'一日を穏やかにスタート。',
+    r2n:'💼 仕事の合間に', r2d:'集中力リセット。5分だけ立ち止まろう。',
+    rwn:'🌍 ワールドルーム', rwd:'世界中の人と同時接続。言語・文化不問。',
+    r4n:'🌙 深夜の静けさ', r4d:'眠れない夜に。ゆっくり入眠セッション。',
+    r5n:'🧘 集中フォーカス', r5d:'試験・締め切り前のリセットに。',
+    live:'● ライブ', joined: n => `${n} に参加しました`,
+    stats_title:'記録', streak_lbl:'日連続達成中 🔥', chart_title:'今週の呼吸時間（分）', today:'今日',
+    badges:'実績バッジ',
+    b_first:'はじめの一歩', b_7d:'7日連続', b_100:'100回呼吸', b_collab:'初コラボ',
+    b_30d:'30日連続', b_night:'深夜の静寂', b_drops:'しずく300', b_world:'世界ルーム',
+    sg_sessions:'総セッション', sg_total:'総呼吸時間', sg_friends:'フレンド',
+    prof_sub:'すべての機能が無料', guest:'ゲスト',
+    sup_title:'サポーターになる 🌿', sup_sub:'BreathSync はずっと無料。気に入ったら支えてください。',
+    sup_f1:'サポーターバッジ 🌿', sup_f2:'新機能への早期アクセス', sup_f3:'開発への直接フィードバック枠',
+    sup_m:'月 ¥480 で支援', sup_y:'年 ¥3,800 で支援',
+    settings:'設定', set_name:'名前', set_lang:'言語 / Language', set_theme:'テーマカラー',
+    set_notify:'リマインダー', set_export:'データをエクスポート', set_reset:'データを初期化',
+    off:'オフ',
+    theme_green:'グリーン', theme_blue:'ブルー', theme_purple:'パープル', theme_coral:'コーラル',
+    name_title:'名前を変更', name_ph:'表示名（フレンドに見えます）', saveBtn:'保存', name_set:'名前を変更しました',
+    lang_title:'言語 / Language', lang_set:'日本語に設定しました',
+    theme_title:'テーマカラー', theme_set:'テーマを変更しました 🎨',
+    notify_title:'リマインダー通知', notify_desc:'毎日決まった時間に深呼吸のリマインダーを送ります。（アプリを開いている間に動作します）',
+    notify_on:'この時間で有効にする', notify_off_btn:'リマインダーを止める',
+    notify_set: t => `毎日 ${t} にリマインドします 🔔`, notify_off_t:'リマインダーを止めました',
+    notify_denied:'通知がブロックされています。ブラウザの設定から許可してください。',
+    rem_body:'深呼吸の時間です 🌿 フウが待っています',
+    export_title:'データエクスポート', export_desc:'呼吸の記録をCSV形式でダウンロードします。', export_do:'CSVをダウンロード',
+    reset_title:'データを初期化', reset_desc:'記録・フレンド・しずく・写真・音楽がすべて消えます。元に戻せません。', reset_do:'すべて消去する',
+    addf_title:'フレンドを追加', addf_desc:'相手の6文字フレンドコードを入力してください。', addf_do:'追加する',
+    addf_bad:'コードの形式が正しくありません', addf_dup:'すでに追加済みです', addf_self:'それはあなた自身のコードです',
+    addf_ok:'フレンドを追加しました！',
+    invite_added: c => `${c} をフレンドに追加しました！`,
+    bonus_title:'ログインボーナス！',
+    bonus_streak: n => `${n}日連続ログイン`,
+    bonus_drops: n => `+${n} しずく`,
+    fuu_hello:'はじめまして！ぼくは「フウ」。\nまいにち いっしょに しんこきゅう しよう！',
+    fuu_daily:'きょうも きてくれて うれしい！',
+    comp_title:'おつかれさま！',
+    comp_body: m => `${m} の深呼吸を完了しました`,
+    comp_drops:'+5 しずく', close:'閉じる',
+    drops_note:'しずくは今後のアイテム交換で使えます（準備中）',
+    nav_home:'ホーム', nav_friends:'フレンド', nav_rooms:'ルーム', nav_stats:'記録', nav_profile:'プロフィール',
+    stripe_unset:'決済リンクは準備中です。もう少しお待ちください！',
+    wd: ['日','月','火','水','木','金','土']
+  },
+  en: {
+    mode_box:'Box', mode_calm:'Relax',
+    phase_in:'Breathe in', phase_hold:'Hold', phase_out:'Breathe out',
+    tagline:'Calm your mind with deep breaths', begin:'Start', done_lbl:'Done',
+    btn_start:'Start', btn_stop:'Stop', btn_again:'Again',
+    session_done:'Session complete ✓',
+    remaining: n => `${n} left`,
+    live_n: n => `${n.toLocaleString('en-US')} people breathing together now`,
+    mode_name: m => ({'478':'4-7-8 breathing','box':'Box breathing','calm':'Relaxed breathing'})[m],
+    bgm_none:'None', bgm_tone:'Tone', bgm_rain:'Rain', bgm_ocean:'Ocean', bgm_forest:'Forest',
+    bgm_white:'White', bgm_binaural:'Binaural', bgm_bowl:'Bowl', bgm_custom:'My music',
+    photo_toggle:'Photo breathing', photo_pick:'Choose photo',
+    photo_set:'Photo set 🖼', photo_need:'Choose a photo first',
+    audio_set:'Your music is set 🎧',
+    ms_today:'Sessions today', ms_streak:'🔥 Day streak', ms_time:'Time today',
+    friends_title:'Friends', my_code:'Your friend code', friends_list:'Friend list',
+    copy:'Copy', copied:'Copied!', share_invite:'＋ Share invite link',
+    online_n: n => `${n} online`,
+    online_now:'Online now', offline:'Offline', join:'Join →', remove:'Remove',
+    add_friend:'＋ Add by friend code',
+    no_friends:'No friends yet',
+    fuu_no_friends:'Swap codes and breathe together!',
+    challenge:'Weekly challenge', ch_name:'30-minute week challenge',
+    ch_status: (m, g) => `${m} min this week / goal ${g} min`,
+    rooms_title:'Rooms', rooms_desc:'Pick a theme and breathe with people worldwide.',
+    r1n:'🌅 Morning routine', r1d:'Start your day gently.',
+    r2n:'💼 Work break', r2d:'Reset your focus. Just 5 minutes.',
+    rwn:'🌍 World room', rwd:'Connected with the whole world. No language needed.',
+    r4n:'🌙 Midnight calm', r4d:'For sleepless nights. Slow wind-down session.',
+    r5n:'🧘 Deep focus', r5d:'Reset before exams and deadlines.',
+    live:'● Live', joined: n => `Joined ${n}`,
+    stats_title:'Stats', streak_lbl:'day streak 🔥', chart_title:'Breathing minutes this week', today:'Today',
+    badges:'Badges',
+    b_first:'First breath', b_7d:'7-day streak', b_100:'100 breaths', b_collab:'First collab',
+    b_30d:'30-day streak', b_night:'Midnight calm', b_drops:'300 drops', b_world:'World room',
+    sg_sessions:'Total sessions', sg_total:'Total time', sg_friends:'Friends',
+    prof_sub:'Everything is free', guest:'Guest',
+    sup_title:'Become a supporter 🌿', sup_sub:'BreathSync is free forever. Support us if you love it.',
+    sup_f1:'Supporter badge 🌿', sup_f2:'Early access to new features', sup_f3:'Direct line to the dev team',
+    sup_m:'¥480 / month', sup_y:'¥3,800 / year',
+    settings:'Settings', set_name:'Name', set_lang:'言語 / Language', set_theme:'Theme color',
+    set_notify:'Reminder', set_export:'Export data', set_reset:'Reset data',
+    off:'Off',
+    theme_green:'Green', theme_blue:'Blue', theme_purple:'Purple', theme_coral:'Coral',
+    name_title:'Change name', name_ph:'Display name (visible to friends)', saveBtn:'Save', name_set:'Name updated',
+    lang_title:'言語 / Language', lang_set:'Switched to English',
+    theme_title:'Theme color', theme_set:'Theme updated 🎨',
+    notify_title:'Daily reminder', notify_desc:'Get a daily reminder to breathe. (Works while the app is open.)',
+    notify_on:'Enable at this time', notify_off_btn:'Turn off reminder',
+    notify_set: t => `Daily reminder set for ${t} 🔔`, notify_off_t:'Reminder turned off',
+    notify_denied:'Notifications are blocked. Please allow them in browser settings.',
+    rem_body:'Time to breathe 🌿 Fuu is waiting',
+    export_title:'Export data', export_desc:'Download your breathing history as CSV.', export_do:'Download CSV',
+    reset_title:'Reset data', reset_desc:'All history, friends, drops, photos and music will be erased. This cannot be undone.', reset_do:'Erase everything',
+    addf_title:'Add friend', addf_desc:'Enter your friend\'s 6-letter code.', addf_do:'Add',
+    addf_bad:'Invalid code format', addf_dup:'Already added', addf_self:'That\'s your own code',
+    addf_ok:'Friend added!',
+    invite_added: c => `Added ${c} as a friend!`,
+    bonus_title:'Daily bonus!',
+    bonus_streak: n => `${n}-day login streak`,
+    bonus_drops: n => `+${n} drops`,
+    fuu_hello:'Hi! I\'m Fuu.\nLet\'s breathe together every day!',
+    fuu_daily:'Happy to see you today!',
+    comp_title:'Well done!',
+    comp_body: m => `You completed ${m} of deep breathing`,
+    comp_drops:'+5 drops', close:'Close',
+    drops_note:'Drops will be exchangeable for items soon',
+    nav_home:'Home', nav_friends:'Friends', nav_rooms:'Rooms', nav_stats:'Stats', nav_profile:'Profile',
+    stripe_unset:'Payment links coming soon!',
+    wd: ['Su','Mo','Tu','We','Th','Fr','Sa']
+  }
+};
+const t = (k, a) => {
+  const v = (I18N[S.lang] && I18N[S.lang][k]) !== undefined ? I18N[S.lang][k] : I18N.ja[k];
+  return typeof v === 'function' ? v(a) : v;
+};
+function applyI18n() {
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = t(el.dataset.i18n);
+    if (typeof v === 'string') el.textContent = v;
+  });
+  if (!running) {
+    $('bphase').textContent = t('tagline');
+    $('clabel').textContent = t('begin');
+    $('start-btn').textContent = sessionDone ? t('btn_again') : t('btn_start');
+  }
+  $('val-lang').textContent = (S.lang === 'ja' ? '日本語' : 'English') + ' ›';
+  $('val-theme').textContent = t('theme_' + S.theme) + ' ›';
+  $('val-notify').textContent = (S.reminder || t('off')) + ' ›';
+  $('val-name').textContent = (S.name || t('guest')) + ' ›';
+  $('prof-name').textContent = S.name || t('guest');
+  renderAll();
+  renderFriends();
+}
+
+/* ══════════════════════════════
+   THEME（テーマカラー）
+══════════════════════════════ */
+const THEMES = {
+  green:  { g:'#1D9E75', g2:'#0F6E56', bgL:'#E1F5EE', midL:'#9FE1CB', bgD:'#04342C', midD:'#085041', soft:'rgba(29,158,117,.13)' },
+  blue:   { g:'#378ADD', g2:'#185FA5', bgL:'#E6F1FB', midL:'#B5D4F4', bgD:'#042C53', midD:'#0C447C', soft:'rgba(55,138,221,.13)' },
+  purple: { g:'#7F77DD', g2:'#534AB7', bgL:'#EEEDFE', midL:'#CECBF6', bgD:'#26215C', midD:'#3C3489', soft:'rgba(127,119,221,.13)' },
+  coral:  { g:'#D85A30', g2:'#993C1D', bgL:'#FAECE7', midL:'#F5C4B3', bgD:'#4A1B0C', midD:'#712B13', soft:'rgba(216,90,48,.13)' }
+};
+const darkMq = window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(name) {
+  const th = THEMES[name] || THEMES.green;
+  const dark = darkMq.matches;
+  const r = document.documentElement.style;
+  r.setProperty('--g', th.g);
+  r.setProperty('--g2', dark ? th.midL : th.g2);
+  r.setProperty('--g-bg', dark ? th.bgD : th.bgL);
+  r.setProperty('--g-mid', dark ? th.midD : th.midL);
+  r.setProperty('--g-soft', th.soft);
+  const meta = document.querySelector('meta[name=theme-color]');
+  if (meta) meta.content = th.g;
+}
+darkMq.addEventListener('change', () => applyTheme(S.theme));
+
+/* ══════════════════════════════
+   フウ（オリジナルキャラクター）
+══════════════════════════════ */
+function fuuSVG(mood, size) {
+  size = size || 110;
+  let face;
+  if (mood === 'cheer') {
+    face = '<path d="M33 44 q5 -6 10 0" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
+         + '<path d="M67 44 q5 -6 10 0" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
+         + '<path d="M45 58 Q55 70 65 58" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+  } else if (mood === 'sleep') {
+    face = '<path d="M33 47 q5 4 10 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>'
+         + '<path d="M67 47 q5 4 10 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>'
+         + '<path d="M50 61 q5 4 10 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  } else {
+    face = '<circle cx="38" cy="46" r="3.6" fill="#fff"/><circle cx="72" cy="46" r="3.6" fill="#fff"/>'
+         + '<path d="M48 59 Q55 66 62 59" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  }
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 110 110" aria-hidden="true">'
+    + '<ellipse cx="55" cy="63" rx="42" ry="38" fill="var(--g)"/>'
+    + '<ellipse cx="55" cy="76" rx="25" ry="16" fill="rgba(255,255,255,.16)"/>'
+    + '<path d="M55 26 Q54 13 44 9 Q57 7 60 15 Q65 8 75 12 Q65 15 62 26 Z" fill="var(--g2)"/>'
+    + '<circle cx="29" cy="57" r="6" fill="rgba(255,255,255,.28)"/>'
+    + '<circle cx="81" cy="57" r="6" fill="rgba(255,255,255,.28)"/>'
+    + face + '</svg>';
+}
+
+/* ══════════════════════════════
+   BGM ENGINE（Web Audio + マイ音楽）
+══════════════════════════════ */
+let currentBgm = S.bgm;
+let bgmVolume = S.vol / 100;
+let audioCtx = null, bgmNodes = [], bgmGain = null;
+let customAudio = null, customFadeIv = null;
 
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
 }
-
-// ホワイトノイズバッファを生成（1秒分を繰り返す）
-function makeNoiseBuffer(ctx, dur = 2) {
-  const frames = ctx.sampleRate * dur;
+function makeNoiseBuffer(ctx, dur) {
+  const frames = ctx.sampleRate * (dur || 2);
   const buf = ctx.createBuffer(2, frames, ctx.sampleRate);
   for (let c = 0; c < 2; c++) {
     const d = buf.getChannelData(c);
@@ -667,340 +824,540 @@ function makeNoiseBuffer(ctx, dur = 2) {
   }
   return buf;
 }
-
 function stopBgm() {
-  bgmNodes.forEach(n => { try { n.stop(); } catch(e){} });
+  bgmNodes.forEach(n => { try { n.stop(); } catch (e) {} });
   bgmNodes = [];
   if (bgmGain) { bgmGain.disconnect(); bgmGain = null; }
+  clearInterval(customFadeIv);
+  if (customAudio) { customAudio.pause(); customAudio.currentTime = 0; customAudio.volume = bgmVolume; }
 }
-
 function playBgm(type) {
   stopBgm();
   if (type === 'none') return;
+  if (type === 'custom') {
+    if (customAudio) { customAudio.volume = bgmVolume; customAudio.play().catch(() => {}); }
+    return;
+  }
   const ctx = getAudioCtx();
   const master = ctx.createGain();
   master.gain.value = bgmVolume;
   master.connect(ctx.destination);
   bgmGain = master;
 
-  const connect = node => { node.connect(master); return node; };
-
   if (type === 'tone') {
-    // 穏やかなサイン波 (A3=220Hz) + 倍音
     [220, 330, 440].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
+      const osc = ctx.createOscillator(), g = ctx.createGain();
       osc.type = 'sine'; osc.frequency.value = freq;
       g.gain.value = i === 0 ? 0.18 : 0.06;
       osc.connect(g); g.connect(master);
       osc.start(); bgmNodes.push(osc);
     });
-  }
-
-  else if (type === 'rain') {
+  } else if (type === 'rain') {
     const buf = makeNoiseBuffer(ctx, 3);
     const src = ctx.createBufferSource();
     src.buffer = buf; src.loop = true;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass'; filter.frequency.value = 1200; filter.Q.value = 0.5;
+    const f = ctx.createBiquadFilter();
+    f.type = 'bandpass'; f.frequency.value = 1200; f.Q.value = 0.5;
     const g = ctx.createGain(); g.gain.value = 0.55;
-    src.connect(filter); filter.connect(g); g.connect(master);
+    src.connect(f); f.connect(g); g.connect(master);
     src.start(); bgmNodes.push(src);
-    // 雨粒のランダムなドロップ感
-    const filter2 = ctx.createBiquadFilter();
-    filter2.type = 'highpass'; filter2.frequency.value = 3000;
+    const f2 = ctx.createBiquadFilter();
+    f2.type = 'highpass'; f2.frequency.value = 3000;
     const src2 = ctx.createBufferSource();
     src2.buffer = buf; src2.loop = true;
     const g2 = ctx.createGain(); g2.gain.value = 0.2;
-    src2.connect(filter2); filter2.connect(g2); g2.connect(master);
+    src2.connect(f2); f2.connect(g2); g2.connect(master);
     src2.start(ctx.currentTime + 0.05); bgmNodes.push(src2);
-  }
-
-  else if (type === 'ocean') {
+  } else if (type === 'ocean') {
     const buf = makeNoiseBuffer(ctx, 4);
     const src = ctx.createBufferSource();
     src.buffer = buf; src.loop = true;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass'; filter.frequency.value = 700;
-    // LFOで波のうねり
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    lfo.frequency.value = 0.18; lfoGain.gain.value = 0.25;
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass'; f.frequency.value = 700;
+    const lfo = ctx.createOscillator(), lfoG = ctx.createGain();
+    lfo.frequency.value = 0.18; lfoG.gain.value = 0.25;
     const g = ctx.createGain(); g.gain.value = 0.5;
-    lfo.connect(lfoGain); lfoGain.connect(g.gain);
-    src.connect(filter); filter.connect(g); g.connect(master);
+    lfo.connect(lfoG); lfoG.connect(g.gain);
+    src.connect(f); f.connect(g); g.connect(master);
     src.start(); lfo.start(); bgmNodes.push(src, lfo);
-  }
-
-  else if (type === 'forest') {
-    // 風（低域ノイズ）
+  } else if (type === 'forest') {
     const buf = makeNoiseBuffer(ctx, 3);
     const src = ctx.createBufferSource();
     src.buffer = buf; src.loop = true;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass'; filter.frequency.value = 400;
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass'; f.frequency.value = 400;
     const g = ctx.createGain(); g.gain.value = 0.3;
-    src.connect(filter); filter.connect(g); g.connect(master);
+    src.connect(f); f.connect(g); g.connect(master);
     src.start(); bgmNodes.push(src);
-    // 鳥のさえずり（ランダムなサイン波）
-    const scheduleBird = () => {
+    (function bird() {
       if (!bgmNodes.includes(src)) return;
       const delay = Math.random() * 4 + 1;
-      const freq = [880, 1047, 1175, 1319, 1568][Math.floor(Math.random()*5)];
-      const t = ctx.currentTime + delay;
-      const osc = ctx.createOscillator();
-      const eg = ctx.createGain();
-      osc.type = 'sine'; osc.frequency.setValueAtTime(freq, t);
-      osc.frequency.linearRampToValueAtTime(freq * 1.15, t + 0.1);
-      eg.gain.setValueAtTime(0, t);
-      eg.gain.linearRampToValueAtTime(0.12, t + 0.05);
-      eg.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+      const freq = [880, 1047, 1175, 1319, 1568][Math.floor(Math.random() * 5)];
+      const tt = ctx.currentTime + delay;
+      const osc = ctx.createOscillator(), eg = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(freq, tt);
+      osc.frequency.linearRampToValueAtTime(freq * 1.15, tt + 0.1);
+      eg.gain.setValueAtTime(0, tt);
+      eg.gain.linearRampToValueAtTime(0.12, tt + 0.05);
+      eg.gain.exponentialRampToValueAtTime(0.001, tt + 0.4);
       osc.connect(eg); eg.connect(master);
-      osc.start(t); osc.stop(t + 0.5);
+      osc.start(tt); osc.stop(tt + 0.5);
       bgmNodes.push(osc);
-      setTimeout(scheduleBird, (delay + 0.5) * 1000);
-    };
-    scheduleBird();
-  }
-
-  else if (type === 'white') {
-    const buf = makeNoiseBuffer(ctx, 2);
+      setTimeout(bird, (delay + 0.5) * 1000);
+    })();
+  } else if (type === 'white') {
     const src = ctx.createBufferSource();
-    src.buffer = buf; src.loop = true;
+    src.buffer = makeNoiseBuffer(ctx, 2); src.loop = true;
     const g = ctx.createGain(); g.gain.value = 0.4;
     src.connect(g); g.connect(master);
     src.start(); bgmNodes.push(src);
-  }
-
-  else if (type === 'binaural') {
-    // 左耳 200Hz、右耳 204Hz → 4Hzシータ波（リラックス）
+  } else if (type === 'binaural') {
     const merger = ctx.createChannelMerger(2);
     merger.connect(master);
     [200, 204].forEach((freq, ch) => {
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
-      const splitter = ctx.createChannelSplitter(1);
+      const osc = ctx.createOscillator(), g = ctx.createGain();
       osc.type = 'sine'; osc.frequency.value = freq;
       g.gain.value = 0.22;
       osc.connect(g); g.connect(merger, 0, ch);
       osc.start(); bgmNodes.push(osc);
     });
-    // 低域サポート
-    const sub = ctx.createOscillator();
-    const sg = ctx.createGain();
+    const sub = ctx.createOscillator(), sg = ctx.createGain();
     sub.frequency.value = 80; sg.gain.value = 0.08;
     sub.connect(sg); sg.connect(master);
     sub.start(); bgmNodes.push(sub);
-  }
-
-  else if (type === 'bowl') {
-    // シンギングボウル: 432Hz サイン波 + 倍音 + エンベロープ繰り返し
-    const strike = () => {
+  } else if (type === 'bowl') {
+    (function strike() {
       if (bgmGain !== master) return;
       [432, 864, 1296].forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        const eg = ctx.createGain();
-        const t = ctx.currentTime;
+        const osc = ctx.createOscillator(), eg = ctx.createGain();
+        const tt = ctx.currentTime;
         osc.type = 'sine'; osc.frequency.value = freq;
-        eg.gain.setValueAtTime(0, t);
-        eg.gain.linearRampToValueAtTime([0.3, 0.1, 0.04][i], t + 0.05);
-        eg.gain.exponentialRampToValueAtTime(0.001, t + 6);
+        eg.gain.setValueAtTime(0, tt);
+        eg.gain.linearRampToValueAtTime([0.3, 0.1, 0.04][i], tt + 0.05);
+        eg.gain.exponentialRampToValueAtTime(0.001, tt + 6);
         osc.connect(eg); eg.connect(master);
-        osc.start(t); osc.stop(t + 6.5);
+        osc.start(tt); osc.stop(tt + 6.5);
         bgmNodes.push(osc);
       });
       setTimeout(strike, 7000);
-    };
-    strike();
+    })();
   }
 }
-
-window.selectBgm = (type, el) => {
-  document.querySelectorAll('.bgm-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
-  el.classList.add('active'); el.setAttribute('aria-pressed','true');
-  currentBgm = type;
-  if (running) playBgm(type);
-  else stopBgm();
-};
-
-window.setBgmVolume = (val) => {
-  bgmVolume = val / 100;
-  if (bgmGain) bgmGain.gain.setTargetAtTime(bgmVolume, audioCtx.currentTime, 0.05);
-};
-
 function fadeBgmOut() {
-  if (!bgmGain) return;
-  bgmGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.8);
-  setTimeout(stopBgm, 3000);
+  if (bgmGain) {
+    bgmGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.8);
+    setTimeout(stopBgm, 3000);
+  }
+  if (customAudio && !customAudio.paused) {
+    clearInterval(customFadeIv);
+    customFadeIv = setInterval(() => {
+      if (customAudio.volume > 0.04) customAudio.volume = Math.max(0, customAudio.volume - 0.04);
+      else { customAudio.pause(); customAudio.currentTime = 0; customAudio.volume = bgmVolume; clearInterval(customFadeIv); }
+    }, 100);
+  }
 }
+function markBgmActive(type) {
+  document.querySelectorAll('.bgm-btn').forEach(b => b.classList.toggle('active', b.dataset.bgm === type));
+}
+window.selectBgm = (type, el) => {
+  if (type === 'custom' && !customAudio) { $('file-audio').click(); return; }
+  currentBgm = type; S.bgm = type; save();
+  markBgmActive(type);
+  if (running) playBgm(type); else stopBgm();
+};
+window.setBgmVolume = (val) => {
+  bgmVolume = val / 100; S.vol = +val; save();
+  if (bgmGain) bgmGain.gain.setTargetAtTime(bgmVolume, audioCtx.currentTime, 0.05);
+  if (customAudio) customAudio.volume = bgmVolume;
+};
+function loadCustomAudio(blob) {
+  if (customAudio) { customAudio.pause(); URL.revokeObjectURL(customAudio.src); }
+  customAudio = new Audio(URL.createObjectURL(blob));
+  customAudio.loop = true;
+  customAudio.volume = bgmVolume;
+}
+$('file-audio').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try { await idb.put('bgm', file); } catch (err) {}
+  loadCustomAudio(file);
+  currentBgm = 'custom'; S.bgm = 'custom'; save();
+  markBgmActive('custom');
+  if (running) playBgm('custom');
+  toast(t('audio_set'));
+  e.target.value = '';
+});
 
 /* ══════════════════════════════
-   SUPABASE REALTIME PRESENCE
+   写真と呼吸
 ══════════════════════════════ */
-let supabase = null;
-let presenceChannel = null;
-const userId = 'u_' + Math.random().toString(36).slice(2, 10);
-
-function initSupabase() {
-  if (window.SUPABASE_URL === 'YOUR_SUPABASE_URL') {
-    // 未設定の場合はデモモードで動作
-    startDemoCounter();
-    return;
+let photoUrl = null;
+function applyPhoto() {
+  const layer = $('photo-layer');
+  const on = S.photoOn && !!photoUrl;
+  layer.classList.toggle('on', on);
+  $('stage').classList.toggle('photo-on', on);
+  $('photo-toggle').classList.toggle('on', on);
+  if (photoUrl) $('photo-img').src = photoUrl;
+}
+window.togglePhoto = async () => {
+  if (!photoUrl) {
+    const blob = await idb.get('photo').catch(() => null);
+    if (blob) photoUrl = URL.createObjectURL(blob);
   }
+  if (!photoUrl) { toast(t('photo_need')); $('file-photo').click(); return; }
+  S.photoOn = !S.photoOn; save();
+  applyPhoto();
+};
+window.pickPhoto = () => $('file-photo').click();
+$('file-photo').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try { await idb.put('photo', file); } catch (err) {}
+  if (photoUrl) URL.revokeObjectURL(photoUrl);
+  photoUrl = URL.createObjectURL(file);
+  S.photoOn = true; save();
+  applyPhoto();
+  toast(t('photo_set'));
+  e.target.value = '';
+});
+
+/* ══════════════════════════════
+   SUPABASE REALTIME（人数 + フレンド在席）
+══════════════════════════════ */
+let sbClient = null, presenceChannel = null;
+let onlineMap = {}; // code -> name
+
+function trackPresence() {
+  if (presenceChannel) {
+    presenceChannel.track({ name: S.name || '', online_at: new Date().toISOString() }).catch(() => {});
+  }
+}
+function initSupabase() {
+  if (!window.supabase || window.SUPABASE_URL.startsWith('YOUR_')) { startDemoCounter(); return; }
   try {
-    supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
-    presenceChannel = supabase.channel('global-presence', {
-      config: { presence: { key: userId } }
-    });
+    sbClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
+    presenceChannel = sbClient.channel('global-presence', { config: { presence: { key: S.code } } });
     presenceChannel
       .on('presence', { event: 'sync' }, () => {
         const state = presenceChannel.presenceState();
-        const count = Object.keys(state).length;
-        updateLiveCount(count);
+        onlineMap = {};
+        Object.keys(state).forEach(code => {
+          const meta = state[code][0] || {};
+          onlineMap[code] = meta.name || '';
+        });
+        updateLiveCount(Object.keys(state).length);
+        renderFriends();
       })
-      .subscribe(async status => {
-        if (status === 'SUBSCRIBED') {
-          await presenceChannel.track({ online_at: new Date().toISOString() });
-        }
-      });
-  } catch (e) {
-    startDemoCounter();
-  }
+      .subscribe(status => { if (status === 'SUBSCRIBED') trackPresence(); });
+  } catch (e) { startDemoCounter(); }
 }
-
-// デモ用カウンター（Supabase未設定時）
-let demoCount = 23847, demoDir = 1;
+let demoIv = null;
 function startDemoCounter() {
-  updateLiveCount(demoCount);
-  setInterval(() => {
-    demoCount += (Math.floor(Math.random() * 5) + 1) * demoDir;
-    if (demoCount > 24100) demoDir = -1;
-    if (demoCount < 23600) demoDir = 1;
-    updateLiveCount(demoCount);
+  let n = 247, dir = 1;
+  updateLiveCount(n);
+  demoIv = setInterval(() => {
+    n += (Math.floor(Math.random() * 3) + 1) * dir;
+    if (n > 300) dir = -1;
+    if (n < 200) dir = 1;
+    updateLiveCount(n);
   }, 2800);
 }
+function updateLiveCount(n) { $('live-count').textContent = t('live_n', n); }
 
-function updateLiveCount(n) {
-  document.getElementById('live-count').textContent =
-    n.toLocaleString('ja-JP') + ' 人が今一緒に呼吸中';
+/* ══════════════════════════════
+   フレンド
+══════════════════════════════ */
+function renderFriends() {
+  $('my-code').textContent = S.code;
+  const onlineFriends = S.friends.filter(f => onlineMap[f.code] !== undefined);
+  $('online-badge').textContent = t('online_n', onlineFriends.length);
+  $('stat-friends').textContent = S.friends.length;
+  const box = $('friends-list');
+  if (!S.friends.length) {
+    box.innerHTML = '<div class="empty-box">' + fuuSVG('happy', 72)
+      + '<div>' + t('no_friends') + '</div><div>' + t('fuu_no_friends') + '</div></div>'
+      + '<button class="invite-row" onclick="openModal(\'addfriend\')">' + t('add_friend') + '</button>';
+    return;
+  }
+  let html = '';
+  S.friends.forEach((f, i) => {
+    const online = onlineMap[f.code] !== undefined;
+    const liveName = (onlineMap[f.code] || '') || f.name || f.code;
+    html += '<div class="fi">'
+      + '<div class="av">' + liveName.slice(0, 2).toUpperCase() + '</div>'
+      + '<div class="fi-info"><div class="fi-name">' + escapeHtml(liveName) + '</div>'
+      + '<div class="fi-status">' + (online ? '<span class="pip"></span>' + t('online_now') : t('offline')) + '</div></div>'
+      + (online
+          ? '<button class="fa" onclick="joinFriendSession()">' + t('join') + '</button>'
+          : '<button class="fa danger" onclick="removeFriend(' + i + ')">' + t('remove') + '</button>')
+      + '</div>';
+  });
+  html += '<button class="invite-row" onclick="openModal(\'addfriend\')">' + t('add_friend') + '</button>';
+  box.innerHTML = html;
 }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+window.copyMyCode = () => {
+  if (navigator.clipboard) navigator.clipboard.writeText(S.code).then(() => toast(t('copied')));
+};
+window.shareInvite = () => {
+  const link = location.origin + location.pathname + '?friend=' + S.code;
+  if (navigator.share) navigator.share({ title: 'BreathSync', url: link }).catch(() => {});
+  else if (navigator.clipboard) navigator.clipboard.writeText(link).then(() => toast(t('copied')));
+};
+function addFriendByCode(code) {
+  code = (code || '').trim().toUpperCase();
+  if (!/^[A-Z0-9]{6}$/.test(code)) { toast(t('addf_bad')); return false; }
+  if (code === S.code) { toast(t('addf_self')); return false; }
+  if (S.friends.some(f => f.code === code)) { toast(t('addf_dup')); return false; }
+  S.friends.push({ code, name: '' });
+  save(); renderFriends();
+  return true;
+}
+window.removeFriend = (i) => { S.friends.splice(i, 1); save(); renderFriends(); };
+window.joinFriendSession = () => {
+  S.flags.collab = true; save();
+  goTo('home');
+  setTimeout(() => { if (!running) startSession(); }, 500);
+};
 
 /* ══════════════════════════════
    BREATH ENGINE
 ══════════════════════════════ */
 const MODES = {
-  '478':  [{ p:'吸って', d:4000, s:1.38 }, { p:'止めて', d:7000, s:1.38 }, { p:'吐いて', d:8000, s:1.0 }],
-  'box':  [{ p:'吸って', d:4000, s:1.38 }, { p:'止めて', d:4000, s:1.38 }, { p:'吐いて', d:4000, s:1.0 }, { p:'止めて', d:4000, s:1.0 }],
-  'calm': [{ p:'吸って', d:4000, s:1.38 }, { p:'吐いて', d:6000, s:1.0 }]
+  '478':  [{ p:'phase_in', d:4000, s:1.38 }, { p:'phase_hold', d:7000, s:1.38 }, { p:'phase_out', d:8000, s:1.0 }],
+  'box':  [{ p:'phase_in', d:4000, s:1.38 }, { p:'phase_hold', d:4000, s:1.38 }, { p:'phase_out', d:4000, s:1.0 }, { p:'phase_hold', d:4000, s:1.0 }],
+  'calm': [{ p:'phase_in', d:4000, s:1.38 }, { p:'phase_out', d:6000, s:1.0 }]
 };
 const SESSION_MS = 3 * 60 * 1000;
+let breathMode = S.pattern;
+let running = false, sessionDone = false, cycleIdx = 0, phaseStart = 0, sessionStart = 0;
+let raf = null, statIv = null, sessionSec = 0;
 
-let breathMode = '478';
-let running = false, cycleIdx = 0, phaseStart = 0, sessionStart = 0;
-let totalSec = 0, todaySessions = 0, totalSessions = 0, raf = null, statIv = null;
+const circleEl = $('circle'), clabelEl = $('clabel'), bphaseEl = $('bphase'),
+      bsubEl = $('bsub'), bprogFill = $('bprog-fill'), startBtn = $('start-btn'), rippleEl = $('ripple');
 
-const circleEl    = document.getElementById('circle');
-const clabelEl    = document.getElementById('clabel');
-const bphaseEl    = document.getElementById('bphase');
-const bsubEl      = document.getElementById('bsub');
-const bprogFill   = document.getElementById('bprog-fill');
-const startBtn    = document.getElementById('start-btn');
-const rippleEl    = document.getElementById('ripple');
-
-function lerp(a, b, t) { return a + (b - a) * t; }
-function easeIO(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
-
+const lerp = (a, b, tt) => a + (b - a) * tt;
+const easeIO = tt => tt < 0.5 ? 2 * tt * tt : -1 + (4 - 2 * tt) * tt;
 function doRipple() {
   rippleEl.style.animation = 'none';
   rippleEl.offsetWidth;
   rippleEl.style.animation = 'rout 1.3s ease-out forwards';
 }
-
+function todayEntry() {
+  const k = dayKey(new Date());
+  if (!S.history[k]) S.history[k] = { sessions: 0, seconds: 0, breaths: 0 };
+  return S.history[k];
+}
 function tick() {
   if (!running) return;
   const now = Date.now();
   const cycles = MODES[breathMode];
   const elapsed = now - phaseStart;
   const cyc = cycles[cycleIdx];
-
   if (elapsed >= cyc.d) {
     phaseStart = now;
-    const prevIdx = cycleIdx;
     cycleIdx = (cycleIdx + 1) % cycles.length;
-    if (cycleIdx === 0) doRipple();
+    if (cycleIdx === 0) { doRipple(); todayEntry().breaths++; }
     raf = requestAnimationFrame(tick);
     return;
   }
-
-  const t = elapsed / cyc.d;
-  const prev = MODES[breathMode][(cycleIdx + MODES[breathMode].length - 1) % MODES[breathMode].length];
-  const scale = lerp(prev.s, cyc.s, easeIO(t));
-  circleEl.style.transform = `scale(${scale.toFixed(3)})`;
-  clabelEl.textContent = cyc.p;
-  bphaseEl.textContent = cyc.p;
-
+  const tt = elapsed / cyc.d;
+  const prev = cycles[(cycleIdx + cycles.length - 1) % cycles.length];
+  circleEl.style.transform = 'scale(' + lerp(prev.s, cyc.s, easeIO(tt)).toFixed(3) + ')';
+  clabelEl.textContent = t(cyc.p);
+  bphaseEl.textContent = t(cyc.p);
   const sEl = now - sessionStart;
   const pct = Math.min(sEl / SESSION_MS * 100, 100);
   bprogFill.style.width = pct + '%';
-  bprogFill.closest('[role=progressbar]').setAttribute('aria-valuenow', Math.round(pct));
-
   const rem = Math.max(0, SESSION_MS - sEl);
-  const rm = Math.floor(rem / 60000), rs = Math.floor(rem % 60000 / 1000);
-  bsubEl.textContent = `残り ${rm}:${String(rs).padStart(2, '0')}`;
-
-  if (sEl >= SESSION_MS) { endSession(); return; }
+  bsubEl.textContent = t('remaining', Math.floor(rem / 60000) + ':' + String(Math.floor(rem % 60000 / 1000)).padStart(2, '0'));
+  if (sEl >= SESSION_MS) { endSession(true); return; }
   raf = requestAnimationFrame(tick);
 }
-
 function startSession() {
-  running = true;
+  running = true; sessionDone = false;
   sessionStart = phaseStart = Date.now();
-  cycleIdx = 0;
-  todaySessions++;
-  totalSessions++;
-  document.getElementById('ms-today').textContent = todaySessions;
-  document.getElementById('stat-sessions').textContent = totalSessions;
-  startBtn.textContent = '終了';
+  cycleIdx = 0; sessionSec = 0;
+  todayEntry().sessions++;
+  save();
+  startBtn.textContent = t('btn_stop');
   doRipple();
   if (currentBgm !== 'none') playBgm(currentBgm);
   raf = requestAnimationFrame(tick);
   statIv = setInterval(() => {
-    totalSec++;
-    const m = Math.floor(totalSec / 60), s = totalSec % 60;
-    const fmt = `${m}:${String(s).padStart(2, '0')}`;
-    document.getElementById('ms-time').textContent = fmt;
-    document.getElementById('stat-total').textContent = fmt;
-    updateChartToday();
+    sessionSec++;
+    todayEntry().seconds++;
+    if (sessionSec % 10 === 0) save();
+    renderHome();
   }, 1000);
 }
-
-function endSession() {
-  running = false;
+function endSession(completed) {
+  running = false; sessionDone = true;
   cancelAnimationFrame(raf);
   clearInterval(statIv);
   circleEl.style.transform = 'scale(1)';
-  clabelEl.textContent = '完了';
-  bphaseEl.textContent = 'セッション完了 ✓';
+  clabelEl.textContent = t('done_lbl');
+  bphaseEl.textContent = t('session_done');
   bsubEl.textContent = '';
   bprogFill.style.width = '0%';
-  startBtn.textContent = 'もう一度';
+  startBtn.textContent = t('btn_again');
   fadeBgmOut();
-  toast('お疲れさまでした！');
+  const h = new Date().getHours();
+  if (h >= 0 && h < 4) S.flags.night = true;
+  save();
+  renderAll();
+  if (completed && sessionSec >= 30) {
+    S.login.drops += 5; save();
+    showCompleteModal();
+  }
 }
-
-window.toggleBreath = () => { if (running) endSession(); else startSession(); };
+window.toggleBreath = () => { if (running) endSession(false); else startSession(); };
 window.setBreathMode = (m, el) => {
-  breathMode = m;
-  MODES; // reference check
-  document.querySelectorAll('.mp').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
-  el.classList.add('active'); el.setAttribute('aria-pressed','true');
-  if (!running) bphaseEl.textContent = { '478':'4-7-8 呼吸', 'box':'ボックス呼吸', 'calm':'リラックス呼吸' }[m];
+  breathMode = m; S.pattern = m; save();
+  document.querySelectorAll('.mp').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (!running) bphaseEl.textContent = t('mode_name', m);
 };
 
-function updateChartToday() {
-  const pct = Math.min(totalSec / 600 * 100, 100);
-  document.getElementById('chart-today').style.height = Math.max(pct, 4) + '%';
+/* ══════════════════════════════
+   履歴・統計レンダリング
+══════════════════════════════ */
+function calcStreak() {
+  let s = 0;
+  let i = ((S.history[dayKey(new Date())] || {}).seconds >= 60) ? 0 : 1;
+  for (;; i++) {
+    const k = dayKey(new Date(Date.now() - i * 864e5));
+    if ((S.history[k] || {}).seconds >= 60) s++;
+    else break;
+  }
+  return s;
 }
+const sumHist = f => Object.values(S.history).reduce((a, e) => a + (e[f] || 0), 0);
+function fmtClock(sec) {
+  return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+}
+function fmtTotal(sec) {
+  if (sec >= 3600) return (sec / 3600).toFixed(1) + 'h';
+  return fmtClock(sec);
+}
+function weekSeconds() {
+  let total = 0;
+  for (let i = 0; i < 7; i++) {
+    const k = dayKey(new Date(Date.now() - i * 864e5));
+    total += (S.history[k] || {}).seconds || 0;
+  }
+  return total;
+}
+function renderHome() {
+  const e = S.history[dayKey(new Date())] || { sessions: 0, seconds: 0 };
+  $('ms-today').textContent = e.sessions || 0;
+  $('ms-time').textContent = fmtClock(e.seconds || 0);
+  $('ms-streak').textContent = calcStreak();
+  $('drops-val').textContent = S.login.drops;
+}
+const BADGES = [
+  { icon:'🌱', key:'b_first',  ok: () => sumHist('sessions') >= 1 },
+  { icon:'🔥', key:'b_7d',     ok: () => calcStreak() >= 7 },
+  { icon:'🌊', key:'b_100',    ok: () => sumHist('breaths') >= 100 },
+  { icon:'🤝', key:'b_collab', ok: () => S.flags.collab },
+  { icon:'🏔️', key:'b_30d',    ok: () => calcStreak() >= 30 },
+  { icon:'🌙', key:'b_night',  ok: () => S.flags.night },
+  { icon:'💧', key:'b_drops',  ok: () => S.login.drops >= 300 },
+  { icon:'🌍', key:'b_world',  ok: () => S.flags.world }
+];
+function renderStats() {
+  $('streak-num').textContent = calcStreak();
+  let bars = '', labels = '', max = 60;
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 864e5);
+    const sec = (S.history[dayKey(d)] || {}).seconds || 0;
+    days.push({ d, sec, isToday: i === 0 });
+    if (sec > max) max = sec;
+  }
+  days.forEach(o => {
+    const h = Math.max(o.sec / max * 100, 3);
+    bars += '<div class="bar' + (o.isToday ? ' today' : '') + '" style="height:' + h.toFixed(1) + '%"></div>';
+    labels += '<div class="cl' + (o.isToday ? ' today' : '') + '">' + (o.isToday ? t('today') : t('wd')[o.d.getDay()]) + '</div>';
+  });
+  $('chart-bars').innerHTML = bars;
+  $('chart-labels').innerHTML = labels;
+  let achHtml = '';
+  BADGES.forEach(b => {
+    achHtml += '<div class="ach' + (b.ok() ? '' : ' locked') + '"><div class="ach-icon">' + b.icon + '</div><div class="ach-name">' + t(b.key) + '</div></div>';
+  });
+  $('ach-grid').innerHTML = achHtml;
+  $('stat-sessions').textContent = sumHist('sessions');
+  $('stat-total').textContent = fmtTotal(sumHist('seconds'));
+  $('stat-friends').textContent = S.friends.length;
+}
+function renderChallengeAndProfile() {
+  const wMin = Math.floor(weekSeconds() / 60);
+  const dict = I18N[S.lang] || I18N.ja;
+  $('ch-status').textContent = dict.ch_status(wMin, 30);
+  $('ch-bar').style.width = Math.min(wMin / 30 * 100, 100) + '%';
+  $('prof-fuu').innerHTML = fuuSVG('happy', 80);
+}
+function renderAll() { renderHome(); renderStats(); renderChallengeAndProfile(); }
+
+/* ══════════════════════════════
+   ログインボーナス & フウ登場
+══════════════════════════════ */
+function checkLoginBonus() {
+  const today = dayKey(new Date());
+  if (S.login.last === today) return;
+  const yesterday = dayKey(new Date(Date.now() - 864e5));
+  S.login.streak = (S.login.last === yesterday) ? S.login.streak + 1 : 1;
+  S.login.last = today;
+  const bonus = Math.min(10 + (S.login.streak - 1) * 5, 50);
+  S.login.drops += bonus;
+  const firstTime = !S.welcomed;
+  S.welcomed = true;
+  save();
+  renderHome();
+  openRawModal(t('bonus_title'),
+    '<div class="fuu-box">'
+    + '<div class="fuu-bounce">' + fuuSVG(firstTime ? 'happy' : 'cheer', 120) + '</div>'
+    + '<div class="fuu-talk">' + escapeHtml(t(firstTime ? 'fuu_hello' : 'fuu_daily')).replace(/\n/g, '<br>') + '</div>'
+    + '<div class="bonus-num">' + t('bonus_drops', bonus) + '</div>'
+    + '<div style="font-size:12px;color:var(--t2)">' + t('bonus_streak', S.login.streak) + ' ・ 💧' + S.login.drops + '</div>'
+    + '<div style="font-size:11px;color:var(--t3)">' + t('drops_note') + '</div>'
+    + '</div>'
+    + '<button class="modal-btn" onclick="closeModal()">' + t('close') + '</button>');
+}
+function showCompleteModal() {
+  const min = Math.floor(sessionSec / 60);
+  const dur = min >= 1 ? (S.lang === 'ja' ? min + '分間' : min + ' min') : (S.lang === 'ja' ? sessionSec + '秒間' : sessionSec + ' sec');
+  openRawModal(t('comp_title'),
+    '<div class="fuu-box">'
+    + '<div class="fuu-bounce">' + fuuSVG('cheer', 110) + '</div>'
+    + '<div class="fuu-talk">' + t('comp_body', dur) + '</div>'
+    + '<div class="bonus-num">' + t('comp_drops') + '</div>'
+    + '</div>'
+    + '<button class="modal-btn" onclick="closeModal()">' + t('close') + '</button>');
+  renderHome();
+}
+
+/* ══════════════════════════════
+   リマインダー通知
+══════════════════════════════ */
+function fireReminder() {
+  const body = t('rem_body');
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try { new Notification('BreathSync', { body, icon: 'icon-192.png' }); } catch (e) { toast(body); }
+  } else toast(body);
+}
+setInterval(() => {
+  if (!S.reminder) return;
+  const now = new Date();
+  const hm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  const today = dayKey(now);
+  if (hm === S.reminder && S.remFired !== today) {
+    S.remFired = today; save();
+    fireReminder();
+  }
+}, 20000);
 
 /* ══════════════════════════════
    NAVIGATION
@@ -1008,45 +1365,21 @@ function updateChartToday() {
 window.goTo = (name) => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('scr-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  if (name === 'friends') document.getElementById('friends-dot').style.display = 'none';
-};
-
-/* ══════════════════════════════
-   FRIENDS
-══════════════════════════════ */
-window.joinFriend = (name) => {
-  toast(name + ' のセッションに参加します！');
-  goTo('home');
-  setTimeout(startSession, 600);
-};
-window.inviteFriend = (name) => {
-  toast(name + ' に招待を送りました 📩');
-};
-window.shareInvite = () => {
-  const link = location.href + '?ref=' + userId;
-  if (navigator.share) {
-    navigator.share({ title: 'BreathSync', text: '一緒に深呼吸しよう！', url: link });
-  } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(link).then(() => toast('招待リンクをコピーしました！'));
-  } else {
-    toast('招待リンク: ' + link);
-  }
+  $('scr-' + name).classList.add('active');
+  $('nav-' + name).classList.add('active');
+  if (name === 'friends') $('friends-dot').style.display = 'none';
+  if (name === 'stats') renderAll();
 };
 
 /* ══════════════════════════════
    ROOMS
 ══════════════════════════════ */
-window.joinRoom = (name, n) => {
-  toast(name + ' (' + n.toLocaleString('ja-JP') + '人) に参加します');
+window.joinRoom = (key) => {
+  if (key === 'world') { S.flags.world = true; save(); }
+  const name = t(key === 'world' ? 'rwn' : key + 'n');
+  toast(t('joined', name));
   goTo('home');
-  bphaseEl.textContent = name + ' に参加中';
-  setTimeout(startSession, 600);
-};
-window.requirePro = () => {
-  toast('このルームは Pro プランが必要です');
-  setTimeout(() => goTo('profile'), 800);
+  setTimeout(() => { if (!running) startSession(); }, 500);
 };
 
 /* ══════════════════════════════
@@ -1054,47 +1387,111 @@ window.requirePro = () => {
 ══════════════════════════════ */
 window.openStripe = (plan) => {
   const url = plan === 'monthly' ? window.STRIPE_LINK_MONTHLY : window.STRIPE_LINK_YEARLY;
-  if (!url || url.startsWith('YOUR_')) {
-    toast('SETUP.md を参照して Stripe リンクを設定してください');
-    return;
-  }
+  if (!url || url.startsWith('YOUR_')) { toast(t('stripe_unset')); return; }
   window.open(url, '_blank', 'noopener');
 };
 
 /* ══════════════════════════════
    MODAL
 ══════════════════════════════ */
-const MODAL_CONTENTS = {
-  notify:  { title:'通知設定', body:'<p style="color:var(--t2);font-size:14px">毎日のリマインダー時刻を選択してください。</p><br><input type="time" value="07:00" style="font-size:16px;padding:8px 12px;border:.5px solid var(--border2);border-radius:8px;background:var(--surface2);color:var(--t);width:100%">' },
-  pattern: { title:'呼吸パターン', body:'<div style="display:flex;flex-direction:column;gap:8px">'+['4-7-8 呼吸（デフォルト）','ボックス呼吸','リラックス呼吸'].map(n=>`<button onclick="toast('${n}に設定しました');closeModal()" style="padding:12px;border:.5px solid var(--border2);border-radius:8px;text-align:left;font-size:14px;color:var(--t);background:var(--surface2)">${n}</button>`).join('')+'</div>' },
-  sound:   { title:'バックグラウンド音', body:'<div style="display:flex;flex-direction:column;gap:8px">'+['雨音（選択中）','波の音','森の音','ホワイトノイズ','なし'].map(n=>`<button onclick="toast('${n}に設定しました');closeModal()" style="padding:12px;border:.5px solid var(--border2);border-radius:8px;text-align:left;font-size:14px;color:var(--t);background:var(--surface2)">${n}</button>`).join('')+'</div>' },
-  export:  { title:'データエクスポート', body:'<p style="color:var(--t2);font-size:14px;margin-bottom:12px">過去のセッションデータをCSV形式でダウンロードします。</p><button onclick="exportCSV();closeModal()" style="width:100%;padding:12px;background:var(--g);color:#fff;border-radius:8px;font-size:14px;font-weight:600">CSVをダウンロード</button>' }
-};
-window.openModal = (key) => {
-  const c = MODAL_CONTENTS[key];
-  if (!c) return;
-  document.getElementById('modal-title').textContent = c.title;
-  document.getElementById('modal-body').innerHTML = c.body;
-  document.getElementById('modal-overlay').classList.add('open');
-};
-window.closeModal = () => document.getElementById('modal-overlay').classList.remove('open');
-
-function exportCSV() {
-  const rows = [['日付','セッション数','合計時間（秒）'],
-                [new Date().toLocaleDateString('ja-JP'), todaySessions, totalSec]];
-  const csv = rows.map(r => r.join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'breathsync_export.csv';
-  a.click();
+function openRawModal(title, bodyHtml) {
+  $('modal-title').textContent = title;
+  $('modal-body').innerHTML = bodyHtml;
+  $('modal-overlay').classList.add('open');
 }
+window.closeModal = () => $('modal-overlay').classList.remove('open');
+
+const MODALS = {
+  name: () => openRawModal(t('name_title'),
+    '<input type="text" id="inp-name" maxlength="20" placeholder="' + t('name_ph') + '" value="' + escapeHtml(S.name) + '">'
+    + '<button class="modal-btn" onclick="saveName()">' + t('saveBtn') + '</button>'),
+  lang: () => openRawModal(t('lang_title'),
+    '<div class="opt-list">'
+    + '<button class="opt-btn' + (S.lang === 'ja' ? ' sel' : '') + '" onclick="setLang(\'ja\')">日本語</button>'
+    + '<button class="opt-btn' + (S.lang === 'en' ? ' sel' : '') + '" onclick="setLang(\'en\')">English</button>'
+    + '</div>'),
+  theme: () => {
+    let sw = '<div class="swatches">';
+    Object.keys(THEMES).forEach(k => {
+      sw += '<button class="swatch' + (S.theme === k ? ' sel' : '') + '" style="background:' + THEMES[k].g + '" onclick="setTheme(\'' + k + '\')" aria-label="' + k + '"></button>';
+    });
+    sw += '</div>';
+    openRawModal(t('theme_title'), sw);
+  },
+  notify: () => openRawModal(t('notify_title'),
+    '<p style="font-size:13px;color:var(--t2);margin-bottom:10px">' + t('notify_desc') + '</p>'
+    + '<input type="time" id="inp-rem" value="' + (S.reminder || '07:00') + '">'
+    + '<button class="modal-btn" onclick="enableReminder()">' + t('notify_on') + '</button>'
+    + (S.reminder ? '<button class="modal-btn ghost" onclick="disableReminder()">' + t('notify_off_btn') + '</button>' : '')),
+  export: () => openRawModal(t('export_title'),
+    '<p style="font-size:13px;color:var(--t2)">' + t('export_desc') + '</p>'
+    + '<button class="modal-btn" onclick="exportCSV();closeModal()">' + t('export_do') + '</button>'),
+  reset: () => openRawModal(t('reset_title'),
+    '<p style="font-size:13px;color:var(--t2)">' + t('reset_desc') + '</p>'
+    + '<button class="modal-btn danger" onclick="resetAll()">' + t('reset_do') + '</button>'),
+  addfriend: () => openRawModal(t('addf_title'),
+    '<p style="font-size:13px;color:var(--t2);margin-bottom:10px">' + t('addf_desc') + '</p>'
+    + '<input type="text" id="inp-code" maxlength="6" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:.2em;font-family:monospace">'
+    + '<button class="modal-btn" onclick="submitFriendCode()">' + t('addf_do') + '</button>')
+};
+window.openModal = (key) => { if (MODALS[key]) MODALS[key](); };
+
+window.saveName = () => {
+  S.name = $('inp-name').value.trim().slice(0, 20);
+  save(); trackPresence(); applyI18n();
+  closeModal(); toast(t('name_set'));
+};
+window.setLang = (l) => {
+  S.lang = l; save(); applyI18n();
+  closeModal(); toast(t('lang_set'));
+};
+window.setTheme = (th) => {
+  S.theme = th; save(); applyTheme(th); applyI18n();
+  closeModal(); toast(t('theme_set'));
+};
+window.enableReminder = () => {
+  const v = $('inp-rem').value;
+  if (!v) return;
+  const finish = () => {
+    S.reminder = v; S.remFired = ''; save();
+    applyI18n(); closeModal(); toast(t('notify_set', v));
+  };
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission().then(finish);
+  } else if ('Notification' in window && Notification.permission === 'denied') {
+    toast(t('notify_denied')); finish();
+  } else finish();
+};
+window.disableReminder = () => {
+  S.reminder = ''; save(); applyI18n();
+  closeModal(); toast(t('notify_off_t'));
+};
+window.submitFriendCode = () => {
+  if (addFriendByCode($('inp-code').value)) { closeModal(); toast(t('addf_ok')); }
+};
+window.exportCSV = () => {
+  const rows = [['date', 'sessions', 'seconds', 'breaths']];
+  Object.keys(S.history).sort().forEach(k => {
+    const e = S.history[k];
+    rows.push([k, e.sessions || 0, e.seconds || 0, e.breaths || 0]);
+  });
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(rows.map(r => r.join(',')).join('\n'));
+  a.download = 'breathsync_history.csv';
+  a.click();
+};
+window.resetAll = async () => {
+  try { localStorage.removeItem('bs1'); } catch (e) {}
+  try { if (idb.db) await idb.clear(); } catch (e) {}
+  location.reload();
+};
 
 /* ══════════════════════════════
    TOAST
 ══════════════════════════════ */
 let toastTimer = null;
 window.toast = (msg) => {
-  const el = document.getElementById('toast');
+  const el = $('toast');
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
@@ -1102,12 +1499,16 @@ window.toast = (msg) => {
 };
 
 /* ══════════════════════════════
-   KEYBOARD SHORTCUTS
+   キーボード
 ══════════════════════════════ */
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
+  if ($('modal-overlay').classList.contains('open')) {
+    if (e.key === 'Escape') closeModal();
+    return;
+  }
   if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleBreath(); }
-  else if (e.key === 'Escape') { if (running) endSession(); closeModal(); }
+  else if (e.key === 'Escape') { if (running) endSession(false); }
   else if (e.key === '1') goTo('home');
   else if (e.key === '2') goTo('friends');
   else if (e.key === '3') goTo('rooms');
@@ -1125,10 +1526,36 @@ if ('serviceWorker' in navigator) {
 /* ══════════════════════════════
    BOOT
 ══════════════════════════════ */
-initSupabase();
-// フレンド通知ドット（デモ）
-setTimeout(() => { document.getElementById('friends-dot').style.display = 'block'; }, 5000);
+applyTheme(S.theme);
+// 保存済みパターン・BGM・音量を復元
+document.querySelectorAll('.mp').forEach(b => b.classList.remove('active'));
+($('mp-' + breathMode) || $('mp-478')).classList.add('active');
+$('bgm-vol').value = S.vol;
+markBgmActive(S.bgm === 'custom' ? 'none' : S.bgm);
+if (S.bgm === 'custom') currentBgm = 'none';
+applyI18n();
 
+// IndexedDB から音楽・写真を復元
+idb.open().then(async () => {
+  const audioBlob = await idb.get('bgm').catch(() => null);
+  if (audioBlob) {
+    loadCustomAudio(audioBlob);
+    if (S.bgm === 'custom') { currentBgm = 'custom'; markBgmActive('custom'); }
+  }
+  const photoBlob = await idb.get('photo').catch(() => null);
+  if (photoBlob) { photoUrl = URL.createObjectURL(photoBlob); applyPhoto(); }
+}).catch(() => {});
+
+// 招待リンク（?friend=CODE）処理
+const params = new URLSearchParams(location.search);
+const inviteCode = params.get('friend');
+if (inviteCode && /^[A-Za-z0-9]{6}$/.test(inviteCode) && inviteCode.toUpperCase() !== S.code) {
+  if (addFriendByCode(inviteCode)) toast(t('invite_added', inviteCode.toUpperCase()));
+  history.replaceState(null, '', location.pathname);
+}
+
+initSupabase();
+checkLoginBonus();
 })();
 </script>
 </body>
