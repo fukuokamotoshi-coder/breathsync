@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BreathSync — Breathe Together with the World</title>
+<meta name="description" content="Breathe in sync with thousands of people around the world. Free breathing app with real-time presence, friends, and guided sessions.">
+<meta name="keywords" content="breathing app, meditation, mindfulness, stress relief, anxiety, deep breathing, 4-7-8 breathing, box breathing, wellness">
+<meta name="theme-color" content="#1D9E75">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://breathsync.app/">
+
+<!-- Open Graph (SNSシェア用) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://breathsync.app/">
+<meta property="og:title" content="BreathSync — Breathe Together with the World">
+<meta property="og:description" content="Join thousands of people breathing together right now. Free, no signup, works everywhere.">
+<meta property="og:image" content="https://breathsync.app/og-image.png">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:site_name" content="BreathSync">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@breathsync">
+<meta name="twitter:title" content="BreathSync — Breathe Together with the World">
+<meta name="twitter:description" content="Join thousands of people breathing together right now. Free, no signup.">
+<meta name="twitter:image" content="https://breathsync.app/og-image.png">
+
+<!-- 構造化データ (Google リッチリザルト) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "BreathSync",
+  "url": "https://breathsync.app/",
+  "description": "Breathe in sync with thousands of people around the world.",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "inLanguage": ["ja", "en"],
+  "keywords": "breathing, meditation, mindfulness, wellness, stress relief"
+}
+</script>
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- ===== SUPABASE 設定 ===== -->
+<!-- SETUP.md を読んで YOUR_SUPABASE_URL と YOUR_SUPABASE_ANON_KEY を差し替えてください -->
+<script>
+window.SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+window.SUPABASE_KEY  = 'YOUR_SUPABASE_ANON_KEY';
+// Stripe の Pro プラン決済リンク（SETUP.md 参照）
+window.STRIPE_LINK_MONTHLY = 'YOUR_STRIPE_MONTHLY_LINK';
+window.STRIPE_LINK_YEARLY  = 'YOUR_STRIPE_YEARLY_LINK';
+</script>
+
+<style>
+/* ── Reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button,input{font-family:inherit;border:none;background:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* ── Tokens ── */
+:root{
+  --g:#1D9E75;--g2:#0F6E56;--g3:#085041;
+  --g-bg:#E1F5EE;--g-mid:#9FE1CB;
+  --bg:#F5F5F0;--surface:#FFFFFF;--surface2:#F0EEEA;
+  --border:rgba(0,0,0,.10);--border2:rgba(0,0,0,.18);
+  --t:#1A1A18;--t2:#6B6B66;--t3:#9E9E99;
+  --blue:#185FA5;--blue-bg:#E6F1FB;
+  --amber:#BA7517;--amber-bg:#FAEEDA;
+  --red:#A32D2D;--red-bg:#FCEBEB;
+  --purple:#534AB7;--purple-bg:#EEEDFE;
+  --coral:#993C1D;--coral-bg:#FAECE7;
+  --radius:12px;--radius-sm:8px;
+  --nav-h:60px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#141412;--surface:#1E1E1C;--surface2:#272725;
+    --border:rgba(255,255,255,.09);--border2:rgba(255,255,255,.16);
+    --t:#EAEAE4;--t2:#888880;--t3:#555550;
+    --g-bg:#04342C;--g-mid:#085041;
+    --blue-bg:#042C53;--amber-bg:#412402;--red-bg:#501313;
+    --purple-bg:#26215C;--coral-bg:#4A1B0C;
+  }
+}
+
+/* ── Base ── */
+html,body{height:100%;background:var(--bg);color:var(--t);}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.5;overflow:hidden;}
+
+/* ── App shell ── */
+#app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;position:relative;background:var(--bg);}
+
+/* ── Screens ── */
+.screen{display:none;flex-direction:column;flex:1;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 8px);}
+.screen.active{display:flex;}
+
+/* ── Top bar ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px;flex-shrink:0;}
+.topbar h1{font-size:20px;font-weight:600;color:var(--t);}
+.topbar h2{font-size:18px;font-weight:600;color:var(--t);}
+.badge{font-size:11px;font-weight:600;border-radius:100px;padding:3px 10px;letter-spacing:.02em;}
+.badge-green{background:var(--g-bg);color:var(--g2);}
+.badge-gold{background:var(--amber-bg);color:var(--amber);}
+.badge-live{background:var(--g);color:#fff;}
+
+/* ── Card ── */
+.card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin:0 12px 10px;overflow:hidden;}
+.card-head{padding:12px 14px 0;font-size:11px;color:var(--t2);letter-spacing:.05em;text-transform:uppercase;}
+.card-body{padding:10px 14px 14px;}
+.card-sep{height:.5px;background:var(--border);margin:0 14px;}
+
+/* ── Bottom nav ── */
+nav{position:absolute;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-bottom));background:var(--surface);border-top:.5px solid var(--border);display:flex;align-items:flex-start;padding-top:4px;z-index:100;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;background:none;color:var(--t2);font-size:10px;font-weight:500;letter-spacing:.02em;}
+.nav-btn svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.nav-btn.active{color:var(--g);}
+.nav-btn .nb{position:relative;display:inline-block;}
+.nav-dot{position:absolute;top:-1px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface);}
+
+/* ════════════════════════
+   HOME
+════════════════════════ */
+.live-bar{display:flex;align-items:center;gap:7px;padding:4px 16px 10px;font-size:13px;color:var(--t2);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--g);animation:pd 2s infinite;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.25}}
+
+.mode-strip{display:flex;gap:6px;padding:0 12px 8px;}
+.mp{flex:1;font-size:11px;font-weight:500;padding:6px 0;border:.5px solid var(--border);border-radius:var(--radius-sm);color:var(--t2);transition:all .15s;}
+.mp.active{background:var(--g-bg);color:var(--g2);border-color:var(--g-mid);}
+
+.stage{display:flex;flex-direction:column;align-items:center;padding:4px 0 16px;}
+.rings{position:relative;width:210px;height:210px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ring{position:absolute;border-radius:50%;border:1.5px solid rgba(29,158,117,.13);}
+.ring:nth-child(1){inset:0;}
+.ring:nth-child(2){inset:15%;}
+.ripple{position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(29,158,117,.13);z-index:1;}
+@keyframes rout{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.1);opacity:0}}
+.circle{width:120px;height:120px;border-radius:50%;background:var(--g);z-index:2;position:relative;display:flex;align-items:center;justify-content:center;transition:transform .12s linear;}
+.clabel{font-size:12px;font-weight:600;color:#fff;letter-spacing:.06em;pointer-events:none;}
+
+.bphase{font-size:22px;font-weight:600;color:var(--t);margin-top:12px;}
+.bsub{font-size:13px;color:var(--t2);margin-top:3px;min-height:20px;}
+.bprog{width:180px;height:3px;background:var(--surface2);border-radius:2px;margin:12px 0 16px;overflow:hidden;}
+.bprog-fill{height:100%;background:var(--g);border-radius:2px;width:0%;transition:width .25s linear;}
+.start-btn{border:1.5px solid var(--g);border-radius:100px;color:var(--g);font-size:15px;font-weight:600;padding:10px 44px;transition:all .15s;}
+.start-btn:hover,.start-btn:active{background:var(--g);color:#fff;}
+
+/* ── BGM strip ── */
+.bgm-section{padding:0 12px 10px;}
+.bgm-label{font-size:11px;color:var(--t2);letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+.bgm-vol{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2);}
+.bgm-vol input[type=range]{width:72px;height:3px;accent-color:var(--g);}
+.bgm-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.bgm-scroll::-webkit-scrollbar{display:none;}
+.bgm-btn{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border:.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);min-width:62px;transition:all .15s;}
+.bgm-btn:hover{background:var(--surface2);}
+.bgm-btn.active{background:var(--g-bg);border-color:var(--g-mid);}
+.bgm-btn .bi{font-size:18px;}
+.bgm-btn .bn{font-size:10px;color:var(--t2);white-space:nowrap;}
+.bgm-btn.active .bn{color:var(--g2);font-weight:600;}
+.bgm-btn .bpro{font-size:9px;color:var(--amber);font-weight:600;}
+/* BGM upsell banner */
+.bgm-upsell{background:var(--amber-bg);border:.5px solid var(--amber);border-radius:var(--radius-sm);padding:10px 12px;margin:0 12px 10px;display:none;align-items:center;gap:8px;}
+.bgm-upsell.show{display:flex;}
+.bgm-upsell-text{flex:1;font-size:12px;color:var(--amber);}
+.bgm-upsell-btn{font-size:12px;font-weight:700;color:var(--amber);white-space:nowrap;}
+
+.mini-stats{display:flex;gap:8px;padding:0 12px 4px;}
+.ms{flex:1;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;}
+.ms-val{font-size:18px;font-weight:600;color:var(--t);}
+.ms-lbl{font-size:10px;color:var(--t2);margin-top:2px;letter-spacing:.03em;}
+
+/* ════════════════════════
+   FRIENDS
+════════════════════════ */
+.fi{display:flex;align-items:center;gap:10px;padding:11px 0;}
+.fi+.fi{border-top:.5px solid var(--border);}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;}
+.av-g{background:var(--g-bg);color:var(--g2);}
+.av-b{background:var(--blue-bg);color:var(--blue);}
+.av-c{background:var(--coral-bg);color:var(--coral);}
+.av-p{background:var(--purple-bg);color:var(--purple);}
+.av-a{background:var(--amber-bg);color:var(--amber);}
+.fi-info{flex:1;min-width:0;}
+.fi-name{font-size:14px;font-weight:500;color:var(--t);}
+.fi-status{font-size:12px;color:var(--t2);margin-top:1px;}
+.pip{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g);margin-right:4px;vertical-align:1px;}
+.fa{font-size:12px;font-weight:600;color:var(--g);flex-shrink:0;}
+.fa:hover{opacity:.7;}
+.invite-row{border:.5px dashed var(--border2);border-radius:var(--radius-sm);padding:12px;text-align:center;font-size:13px;color:var(--t2);margin-top:6px;width:100%;}
+.invite-row:hover{background:var(--surface2);}
+
+.challenge-item{display:flex;align-items:center;gap:10px;padding:10px 0;}
+.ch-icon{width:40px;height:40px;border-radius:50%;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ch-bar-wrap{height:4px;background:var(--surface2);border-radius:2px;margin-top:5px;overflow:hidden;}
+.ch-bar{height:100%;background:var(--purple);border-radius:2px;}
+
+/* ════════════════════════
+   ROOMS
+════════════════════════ */
+.room{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin:0 12px 10px;padding:14px 16px;transition:background .1s;}
+.room:hover{background:var(--surface2);}
+.room.pro{border-color:var(--g-mid);}
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.rname{font-size:15px;font-weight:600;color:var(--t);}
+.rdesc{font-size:13px;color:var(--t2);margin-bottom:8px;}
+.rtag{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border-radius:100px;}
+.rtag-live{background:var(--g-bg);color:var(--g2);}
+.rtag-lock{background:var(--surface2);color:var(--t2);}
+
+/* ════════════════════════
+   STATS
+════════════════════════ */
+.streak-hero{background:var(--g);border-radius:var(--radius);margin:0 12px 10px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+.sh-left{display:flex;flex-direction:column;}
+.sh-num{font-size:40px;font-weight:700;color:#fff;line-height:1;}
+.sh-lbl{font-size:12px;color:rgba(255,255,255,.8);margin-top:4px;}
+.sh-right{font-size:44px;}
+.chart-wrap{padding:2px 0 8px;}
+.chart-bars{display:flex;align-items:flex-end;gap:5px;height:72px;}
+.bar{flex:1;background:var(--g-mid);border-radius:3px 3px 0 0;opacity:.6;min-height:4px;transition:height .4s ease;}
+.bar.today{background:var(--g);opacity:1;}
+.chart-labels{display:flex;gap:5px;margin-top:5px;}
+.cl{flex:1;font-size:10px;color:var(--t2);text-align:center;}
+.cl.today{color:var(--g);font-weight:600;}
+
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.ach{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 6px;text-align:center;transition:transform .1s;}
+.ach:hover{transform:scale(1.04);}
+.ach-icon{font-size:24px;}
+.ach-name{font-size:10px;color:var(--t2);margin-top:4px;line-height:1.3;}
+.ach.locked{opacity:.3;filter:grayscale(1);}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 12px 10px;}
+.sg{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;}
+.sg-val{font-size:20px;font-weight:600;color:var(--t);}
+.sg-lbl{font-size:10px;color:var(--t2);margin-top:2px;}
+
+/* ════════════════════════
+   PROFILE
+════════════════════════ */
+.prof-head{display:flex;flex-direction:column;align-items:center;padding:20px 16px 14px;}
+.prof-av{width:76px;height:76px;border-radius:50%;background:var(--g-bg);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--g2);margin-bottom:10px;border:2px solid var(--g-mid);}
+.prof-name{font-size:19px;font-weight:600;color:var(--t);}
+.prof-sub{font-size:13px;color:var(--t2);margin-top:3px;}
+
+.plan-card{background:var(--g);border-radius:var(--radius);margin:0 12px 10px;padding:18px 18px 16px;overflow:hidden;position:relative;}
+.plan-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:3px;}
+.plan-price{font-size:13px;color:rgba(255,255,255,.8);margin-bottom:14px;}
+.plan-feats{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.pf{font-size:13px;color:#fff;display:flex;align-items:center;gap:8px;}
+.pf-check{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.plan-btns{display:flex;gap:8px;}
+.plan-btn{flex:1;background:#fff;color:var(--g2);border-radius:100px;padding:10px 0;font-size:14px;font-weight:700;text-align:center;transition:opacity .15s;}
+.plan-btn:hover{opacity:.88;}
+.plan-btn.yearly{background:rgba(255,255,255,.85);position:relative;}
+.plan-btn.yearly::after{content:'37%OFF';position:absolute;top:-8px;right:-4px;background:var(--amber-bg);color:var(--amber);font-size:9px;font-weight:700;padding:2px 6px;border-radius:100px;}
+
+.menu-list{overflow:hidden;}
+.mi{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;transition:background .1s;}
+.mi+.mi{border-top:.5px solid var(--border);}
+.mi:hover{background:var(--surface2);}
+.mi-lbl{font-size:14px;color:var(--t);}
+.mi-val{font-size:13px;color:var(--t2);}
+.mi-danger .mi-lbl{color:var(--red);}
+
+/* ── Toast ── */
+#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px);left:50%;transform:translateX(-50%) translateY(12px);background:var(--t);color:var(--bg);font-size:13px;font-weight:500;padding:9px 18px;border-radius:100px;opacity:0;pointer-events:none;transition:all .22s;z-index:999;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── Modal ── */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+#modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:430px;padding:20px 18px calc(20px + var(--safe-bottom));max-height:80vh;overflow-y:auto;}
+.modal h3{font-size:17px;font-weight:600;margin-bottom:12px;color:var(--t);}
+.modal-close{float:right;font-size:22px;color:var(--t2);line-height:1;margin-top:-2px;}
+
+/* ── Util ── */
+.sec-title{font-size:11px;color:var(--t2);letter-spacing:.05em;padding:8px 16px 4px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ════ HOME ════ -->
+<section class="screen active" id="scr-home" role="main" aria-label="ホーム">
+  <div class="topbar">
+    <h1>BreathSync</h1>
+    <span class="badge badge-green" id="plan-badge">すべて無料</span>
+  </div>
+  <div class="live-bar">
+    <div class="live-dot" aria-hidden="true"></div>
+    <span id="live-count">接続中...</span>
+  </div>
+  <div class="mode-strip" role="group" aria-label="呼吸パターン">
+    <button class="mp active" onclick="setBreathMode('478',this)" aria-pressed="true">4-7-8</button>
+    <button class="mp" onclick="setBreathMode('box',this)" aria-pressed="false">ボックス</button>
+    <button class="mp" onclick="setBreathMode('calm',this)" aria-pressed="false">リラックス</button>
+  </div>
+  <div class="stage">
+    <div class="rings" aria-hidden="true">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ripple" id="ripple"></div>
+      <div class="circle" id="circle">
+        <span class="clabel" id="clabel">はじめる</span>
+      </div>
+    </div>
+    <div class="bphase" id="bphase" aria-live="polite">深呼吸で心を整えよう</div>
+    <div class="bsub" id="bsub"></div>
+    <div class="bprog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="bprog-fill" id="bprog-fill"></div>
+    </div>
+    <button class="start-btn" id="start-btn" onclick="toggleBreath()">スタート</button>
+  </div>
+  <!-- BGM selector -->
+  <div class="bgm-section">
+    <div class="bgm-label">
+      <span>BGM</span>
+      <div class="bgm-vol" id="bgm-vol-wrap">
+        <span>🔈</span>
+        <input type="range" min="0" max="100" value="60" id="bgm-vol" aria-label="音量" oninput="setBgmVolume(this.value)">
+        <span>🔊</span>
+      </div>
+    </div>
+    <div class="bgm-scroll" role="group" aria-label="BGM選択">
+      <button class="bgm-btn active" onclick="selectBgm('none',this)" aria-pressed="true">
+        <span class="bi">🔇</span><span class="bn">なし</span>
+      </button>
+      <button class="bgm-btn" onclick="selectBgm('tone',this)" aria-pressed="false">
+        <span class="bi">🎵</span><span class="bn">トーン</span>
+      </button>
+      <button class="bgm-btn" onclick="selectBgm('rain',this)" aria-pressed="false">
+        <span class="bi">🌧️</span><span class="bn">雨音</span>
+      </button>
+      <button class="bgm-btn" onclick="selectBgm('ocean',this)" aria-pressed="false">
+        <span class="bi">🌊</span><span class="bn">波の音</span>
+      </button>
+      <button class="bgm-btn" onclick="selectBgm('forest',this)" aria-pressed="false">
+        <span class="bi">🌲</span><span class="bn">森の音</span>
+      </button>
+      <button class="bgm-btn" onclick="selectBgm('white',this)" aria-pressed="false">
+        <span class="bi">🌫️</span><span class="bn">ホワイト</span>
+      </button>
+      <button class="bgm-btn" onclick="selectBgm('binaural',this)" aria-pressed="false">
+        <span class="bi">🧠</span><span class="bn">バイノーラル</span>
+      </button>
+      <button class="bgm-btn" onclick="selectBgm('bowl',this)" aria-pressed="false">
+        <span class="bi">🪬</span><span class="bn">ボウル</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mini-stats">
+    <div class="ms"><div class="ms-val" id="ms-today">0</div><div class="ms-lbl">今日のセッション</div></div>
+    <div class="ms"><div class="ms-val" id="ms-streak">7</div><div class="ms-lbl">🔥 連続日数</div></div>
+    <div class="ms"><div class="ms-val" id="ms-time">0:00</div><div class="ms-lbl">今日の時間</div></div>
+  </div>
+</section>
+
+<!-- ════ FRIENDS ════ -->
+<section class="screen" id="scr-friends" aria-label="フレンド">
+  <div class="topbar">
+    <h2>フレンド</h2>
+    <span class="badge badge-green" id="online-badge">3 オンライン</span>
+  </div>
+  <div class="sec-title">今すぐ一緒に呼吸</div>
+  <div class="card">
+    <div class="card-body" id="friends-online">
+      <div class="fi">
+        <div class="av av-b">YK</div>
+        <div class="fi-info">
+          <div class="fi-name">山田 健太</div>
+          <div class="fi-status"><span class="pip"></span>呼吸中 — 2分目</div>
+        </div>
+        <button class="fa" onclick="joinFriend('山田 健太')">参加 →</button>
+      </div>
+      <div class="fi">
+        <div class="av av-p">SM</div>
+        <div class="fi-info">
+          <div class="fi-name">鈴木 美咲</div>
+          <div class="fi-status"><span class="pip"></span>オンライン</div>
+        </div>
+        <button class="fa" onclick="inviteFriend('鈴木 美咲')">誘う →</button>
+      </div>
+      <div class="fi">
+        <div class="av av-c">TN</div>
+        <div class="fi-info">
+          <div class="fi-name">田中 直人</div>
+          <div class="fi-status"><span class="pip"></span>オンライン</div>
+        </div>
+        <button class="fa" onclick="inviteFriend('田中 直人')">誘う →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">最近の仲間</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="fi">
+        <div class="av av-a">AW</div>
+        <div class="fi-info">
+          <div class="fi-name">渡辺 彩</div>
+          <div class="fi-status">1時間前にセッション完了</div>
+        </div>
+        <button class="fa" onclick="toast('メッセージを送りました 📩')">メッセージ</button>
+      </div>
+      <div class="fi">
+        <div class="av av-g">HM</div>
+        <div class="fi-info">
+          <div class="fi-name">松本 浩二</div>
+          <div class="fi-status">昨日 · 🔥 42日連続</div>
+        </div>
+        <button class="fa" onclick="toast('👏 拍手を送りました！')">拍手 👏</button>
+      </div>
+      <button class="invite-row" onclick="shareInvite()">＋ 友達を招待する</button>
+    </div>
+  </div>
+
+  <div class="sec-title">グループチャレンジ</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="challenge-item">
+        <div class="ch-icon">🏆</div>
+        <div style="flex:1">
+          <div class="fi-name">30日チャレンジ</div>
+          <div class="fi-status">5人参加中 · あと23日</div>
+          <div class="ch-bar-wrap"><div class="ch-bar" style="width:23%"></div></div>
+        </div>
+        <button class="fa" onclick="toast('チャレンジに参加しました！')">参加</button>
+      </div>
+      <div class="challenge-item">
+        <div class="ch-icon">🌊</div>
+        <div style="flex:1">
+          <div class="fi-name">毎朝チャレンジ</div>
+          <div class="fi-status">12人参加中 · あと18日</div>
+          <div class="ch-bar-wrap"><div class="ch-bar" style="width:40%;background:var(--blue)"></div></div>
+        </div>
+        <button class="fa" onclick="toast('チャレンジに参加しました！')">参加</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ ROOMS ════ -->
+<section class="screen" id="scr-rooms" aria-label="ルーム">
+  <div class="topbar"><h2>ルーム</h2></div>
+  <p style="padding:0 16px 10px;font-size:13px;color:var(--t2)">世界中の人とリアルタイムで一緒に呼吸できます。</p>
+
+  <button class="room" onclick="joinRoom('朝のルーティン',241)">
+    <div class="rh"><span class="rname">🌅 朝のルーティン</span><span class="badge badge-live">241人</span></div>
+    <div class="rdesc">毎朝 6〜8時開催。一日を穏やかにスタート。</div>
+    <span class="rtag rtag-live">● ライブ</span>
+  </button>
+
+  <button class="room" onclick="joinRoom('仕事の合間に',87)">
+    <div class="rh"><span class="rname">💼 仕事の合間に</span><span class="badge badge-live">87人</span></div>
+    <div class="rdesc">集中力リセット。5分だけ立ち止まろう。</div>
+    <span class="rtag rtag-live">● ライブ</span>
+  </button>
+
+  <button class="room" onclick="joinRoom('ワールドルーム',1423)">
+    <div class="rh"><span class="rname">🌍 ワールドルーム</span><span class="badge badge-live">1,423人</span></div>
+    <div class="rdesc">世界中の人と同時接続。言語・文化不問。</div>
+    <span class="rtag rtag-live">● ライブ</span>
+  </button>
+
+  <button class="room" onclick="joinRoom('深夜の静けさ',312)">
+    <div class="rh"><span class="rname">🌙 深夜の静けさ</span><span class="badge badge-live">312人</span></div>
+    <div class="rdesc">眠れない夜に。ガイド音声つき入眠セッション。</div>
+    <span class="rtag rtag-live">● ライブ</span>
+  </button>
+
+  <button class="room" onclick="joinRoom('集中フォーカス',156)">
+    <div class="rh"><span class="rname">🧘 集中フォーカス</span><span class="badge badge-live">156人</span></div>
+    <div class="rdesc">25分ポモドーロ式。試験・締め切り前に。</div>
+    <span class="rtag rtag-live">● ライブ</span>
+  </button>
+
+  <button class="room" onclick="joinRoom('ストレス解放',98)">
+    <div class="rh"><span class="rname">💆 ストレス解放</span><span class="badge badge-live">98人</span></div>
+    <div class="rdesc">セラピスト監修の10分プログラム。</div>
+    <span class="rtag rtag-live">● ライブ</span>
+  </button>
+</section>
+
+<!-- ════ STATS ════ -->
+<section class="screen" id="scr-stats" aria-label="記録">
+  <div class="topbar"><h2>記録</h2></div>
+
+  <div class="streak-hero" aria-label="7日連続達成中">
+    <div class="sh-left">
+      <div class="sh-num" id="streak-num">7</div>
+      <div class="sh-lbl">日連続達成中 🔥</div>
+    </div>
+    <div class="sh-right">🏅</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">今週の呼吸時間（分）</div>
+    <div class="card-body">
+      <div class="chart-wrap">
+        <div class="chart-bars" id="chart-bars">
+          <div class="bar" style="height:40%"></div>
+          <div class="bar" style="height:60%"></div>
+          <div class="bar" style="height:35%"></div>
+          <div class="bar" style="height:75%"></div>
+          <div class="bar" style="height:55%"></div>
+          <div class="bar" style="height:88%"></div>
+          <div class="bar today" style="height:50%" id="chart-today"></div>
+        </div>
+        <div class="chart-labels">
+          <div class="cl">月</div><div class="cl">火</div><div class="cl">水</div>
+          <div class="cl">木</div><div class="cl">金</div><div class="cl">土</div>
+          <div class="cl today">今日</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">実績バッジ</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="ach-grid">
+        <div class="ach" title="はじめの一歩"><div class="ach-icon">🌱</div><div class="ach-name">はじめの一歩</div></div>
+        <div class="ach" title="7日連続"><div class="ach-icon">🔥</div><div class="ach-name">7日連続</div></div>
+        <div class="ach" title="100回呼吸"><div class="ach-icon">🌊</div><div class="ach-name">100回呼吸</div></div>
+        <div class="ach" title="初コラボ"><div class="ach-icon">🤝</div><div class="ach-name">初コラボ</div></div>
+        <div class="ach locked" title="30日連続（未達成）"><div class="ach-icon">🏔️</div><div class="ach-name">30日連続</div></div>
+        <div class="ach locked" title="深夜の静寂（未達成）"><div class="ach-icon">🌙</div><div class="ach-name">深夜の静寂</div></div>
+        <div class="ach locked" title="PRO会員（未達成）"><div class="ach-icon">👑</div><div class="ach-name">PRO会員</div></div>
+        <div class="ach locked" title="世界ルーム（未達成）"><div class="ach-icon">🌍</div><div class="ach-name">世界ルーム</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="sg"><div class="sg-val" id="stat-sessions">0</div><div class="sg-lbl">総セッション</div></div>
+    <div class="sg"><div class="sg-val" id="stat-total">0:00</div><div class="sg-lbl">総呼吸時間</div></div>
+    <div class="sg"><div class="sg-val">12</div><div class="sg-lbl">一緒に呼吸した人</div></div>
+  </div>
+</section>
+
+<!-- ════ PROFILE ════ -->
+<section class="screen" id="scr-profile" aria-label="プロフィール">
+  <div class="prof-head">
+    <div class="prof-av" aria-hidden="true">あ</div>
+    <div class="prof-name">あなた</div>
+    <div class="prof-sub" id="prof-plan-lbl">2024年1月から · すべての機能が無料</div>
+  </div>
+
+  <div class="plan-card" id="plan-card">
+    <div class="plan-title">サポーターになる 🌿</div>
+    <div class="plan-price">BreathSync はずっと無料。気に入ったら支えてください。</div>
+    <div class="plan-feats">
+      <div class="pf"><span class="pf-check">✓</span>サポーターバッジ（名前の横に 🌿 表示）</div>
+      <div class="pf"><span class="pf-check">✓</span>90日以上の詳細セッション履歴・エクスポート</div>
+      <div class="pf"><span class="pf-check">✓</span>オリジナル呼吸パターンを作成・保存（最大10個）</div>
+      <div class="pf"><span class="pf-check">✓</span>フレンドとのグループセッション（同時10人まで）</div>
+      <div class="pf"><span class="pf-check">✓</span>新機能への早期アクセス</div>
+      <div class="pf"><span class="pf-check">✓</span>開発チームへの直接フィードバック枠</div>
+    </div>
+    <div class="plan-btns">
+      <button class="plan-btn" onclick="openStripe('monthly')">月 ¥480 で支援</button>
+      <button class="plan-btn yearly" onclick="openStripe('yearly')">年 ¥3,800 で支援</button>
+    </div>
+  </div>
+
+  <div class="sec-title">設定</div>
+  <div class="card menu-list">
+    <div class="mi" onclick="openModal('notify')">
+      <span class="mi-lbl">通知設定</span><span class="mi-val">毎朝 7:00 ›</span>
+    </div>
+    <div class="mi" onclick="openModal('pattern')">
+      <span class="mi-lbl">デフォルト呼吸パターン</span><span class="mi-val">4-7-8 ›</span>
+    </div>
+    <div class="mi" onclick="openModal('sound')">
+      <span class="mi-lbl">バックグラウンド音</span><span class="mi-val">雨音 ›</span>
+    </div>
+    <div class="mi" onclick="openModal('export')">
+      <span class="mi-lbl">データをエクスポート</span><span class="mi-val">›</span>
+    </div>
+    <div class="mi mi-danger" onclick="toast('ログアウトしました')">
+      <span class="mi-lbl">ログアウト</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════ BOTTOM NAV ════ -->
+<nav aria-label="メインナビゲーション">
+  <button class="nav-btn active" id="nav-home" onclick="goTo('home')" aria-label="ホーム">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    ホーム
+  </button>
+  <button class="nav-btn" id="nav-friends" onclick="goTo('friends')" aria-label="フレンド">
+    <div class="nb">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="nav-dot" id="friends-dot" aria-label="新着通知"></span>
+    </div>
+    フレンド
+  </button>
+  <button class="nav-btn" id="nav-rooms" onclick="goTo('rooms')" aria-label="ルーム">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    ルーム
+  </button>
+  <button class="nav-btn" id="nav-stats" onclick="goTo('stats')" aria-label="記録">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    記録
+  </button>
+  <button class="nav-btn" id="nav-profile" onclick="goTo('profile')" aria-label="プロフィール">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    プロフィール
+  </button>
+</nav>
+
+<!-- Toast -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Modal -->
+<div id="modal-overlay" onclick="closeModal()" role="dialog" aria-modal="true" aria-label="設定">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()" aria-label="閉じる">×</button>
+    <h3 id="modal-title"></h3>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════
+   BGM ENGINE (Web Audio API)
+══════════════════════════════ */
+const PRO_BGMS = new Set(['rain','ocean','forest','white','binaural','bowl']);
+let isPro = false; // サポーター課金後に true にする（機能制限には使わない）
+let currentBgm = 'none';
+let bgmVolume = 0.6;
+let audioCtx = null;
+let bgmNodes = []; // 停止対象ノード群
+let bgmGain = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+// ホワイトノイズバッファを生成（1秒分を繰り返す）
+function makeNoiseBuffer(ctx, dur = 2) {
+  const frames = ctx.sampleRate * dur;
+  const buf = ctx.createBuffer(2, frames, ctx.sampleRate);
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < frames; i++) d[i] = Math.random() * 2 - 1;
+  }
+  return buf;
+}
+
+function stopBgm() {
+  bgmNodes.forEach(n => { try { n.stop(); } catch(e){} });
+  bgmNodes = [];
+  if (bgmGain) { bgmGain.disconnect(); bgmGain = null; }
+}
+
+function playBgm(type) {
+  stopBgm();
+  if (type === 'none') return;
+  const ctx = getAudioCtx();
+  const master = ctx.createGain();
+  master.gain.value = bgmVolume;
+  master.connect(ctx.destination);
+  bgmGain = master;
+
+  const connect = node => { node.connect(master); return node; };
+
+  if (type === 'tone') {
+    // 穏やかなサイン波 (A3=220Hz) + 倍音
+    [220, 330, 440].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.value = i === 0 ? 0.18 : 0.06;
+      osc.connect(g); g.connect(master);
+      osc.start(); bgmNodes.push(osc);
+    });
+  }
+
+  else if (type === 'rain') {
+    const buf = makeNoiseBuffer(ctx, 3);
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass'; filter.frequency.value = 1200; filter.Q.value = 0.5;
+    const g = ctx.createGain(); g.gain.value = 0.55;
+    src.connect(filter); filter.connect(g); g.connect(master);
+    src.start(); bgmNodes.push(src);
+    // 雨粒のランダムなドロップ感
+    const filter2 = ctx.createBiquadFilter();
+    filter2.type = 'highpass'; filter2.frequency.value = 3000;
+    const src2 = ctx.createBufferSource();
+    src2.buffer = buf; src2.loop = true;
+    const g2 = ctx.createGain(); g2.gain.value = 0.2;
+    src2.connect(filter2); filter2.connect(g2); g2.connect(master);
+    src2.start(ctx.currentTime + 0.05); bgmNodes.push(src2);
+  }
+
+  else if (type === 'ocean') {
+    const buf = makeNoiseBuffer(ctx, 4);
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = 700;
+    // LFOで波のうねり
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.frequency.value = 0.18; lfoGain.gain.value = 0.25;
+    const g = ctx.createGain(); g.gain.value = 0.5;
+    lfo.connect(lfoGain); lfoGain.connect(g.gain);
+    src.connect(filter); filter.connect(g); g.connect(master);
+    src.start(); lfo.start(); bgmNodes.push(src, lfo);
+  }
+
+  else if (type === 'forest') {
+    // 風（低域ノイズ）
+    const buf = makeNoiseBuffer(ctx, 3);
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = 400;
+    const g = ctx.createGain(); g.gain.value = 0.3;
+    src.connect(filter); filter.connect(g); g.connect(master);
+    src.start(); bgmNodes.push(src);
+    // 鳥のさえずり（ランダムなサイン波）
+    function scheduleBird() {
+      if (!bgmNodes.includes(src)) return;
+      const delay = Math.random() * 4 + 1;
+      const freq = [880, 1047, 1175, 1319, 1568][Math.floor(Math.random()*5)];
+      const t = ctx.currentTime + delay;
+      const osc = ctx.createOscillator();
+      const eg = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.linearRampToValueAtTime(freq * 1.15, t + 0.1);
+      eg.gain.setValueAtTime(0, t);
+      eg.gain.linearRampToValueAtTime(0.12, t + 0.05);
+      eg.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+      osc.connect(eg); eg.connect(master);
+      osc.start(t); osc.stop(t + 0.5);
+      bgmNodes.push(osc);
+      setTimeout(scheduleBird, (delay + 0.5) * 1000);
+    }
+    scheduleBird();
+  }
+
+  else if (type === 'white') {
+    const buf = makeNoiseBuffer(ctx, 2);
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const g = ctx.createGain(); g.gain.value = 0.4;
+    src.connect(g); g.connect(master);
+    src.start(); bgmNodes.push(src);
+  }
+
+  else if (type === 'binaural') {
+    // 左耳 200Hz、右耳 204Hz → 4Hzシータ波（リラックス）
+    const merger = ctx.createChannelMerger(2);
+    merger.connect(master);
+    [200, 204].forEach((freq, ch) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      const splitter = ctx.createChannelSplitter(1);
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.value = 0.22;
+      osc.connect(g); g.connect(merger, 0, ch);
+      osc.start(); bgmNodes.push(osc);
+    });
+    // 低域サポート
+    const sub = ctx.createOscillator();
+    const sg = ctx.createGain();
+    sub.frequency.value = 80; sg.gain.value = 0.08;
+    sub.connect(sg); sg.connect(master);
+    sub.start(); bgmNodes.push(sub);
+  }
+
+  else if (type === 'bowl') {
+    // シンギングボウル: 432Hz サイン波 + 倍音 + エンベロープ繰り返し
+    function strike() {
+      if (bgmGain !== master) return;
+      [432, 864, 1296].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const eg = ctx.createGain();
+        const t = ctx.currentTime;
+        osc.type = 'sine'; osc.frequency.value = freq;
+        eg.gain.setValueAtTime(0, t);
+        eg.gain.linearRampToValueAtTime([0.3, 0.1, 0.04][i], t + 0.05);
+        eg.gain.exponentialRampToValueAtTime(0.001, t + 6);
+        osc.connect(eg); eg.connect(master);
+        osc.start(t); osc.stop(t + 6.5);
+        bgmNodes.push(osc);
+      });
+      setTimeout(strike, 7000);
+    }
+    strike();
+  }
+}
+
+window.selectBgm = (type, el) => {
+  document.querySelectorAll('.bgm-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+  el.classList.add('active'); el.setAttribute('aria-pressed','true');
+  currentBgm = type;
+  if (running) playBgm(type);
+  else stopBgm();
+};
+
+window.setBgmVolume = (val) => {
+  bgmVolume = val / 100;
+  if (bgmGain) bgmGain.gain.setTargetAtTime(bgmVolume, audioCtx.currentTime, 0.05);
+};
+
+function fadeBgmOut() {
+  if (!bgmGain) return;
+  bgmGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.8);
+  setTimeout(stopBgm, 3000);
+}
+
+/* ══════════════════════════════
+   SUPABASE REALTIME PRESENCE
+══════════════════════════════ */
+let supabase = null;
+let presenceChannel = null;
+const userId = 'u_' + Math.random().toString(36).slice(2, 10);
+
+function initSupabase() {
+  if (window.SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    // 未設定の場合はデモモードで動作
+    startDemoCounter();
+    return;
+  }
+  try {
+    supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
+    presenceChannel = supabase.channel('global-presence', {
+      config: { presence: { key: userId } }
+    });
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.presenceState();
+        const count = Object.keys(state).length;
+        updateLiveCount(count);
+      })
+      .subscribe(async status => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({ online_at: new Date().toISOString() });
+        }
+      });
+  } catch (e) {
+    startDemoCounter();
+  }
+}
+
+// デモ用カウンター（Supabase未設定時）
+let demoCount = 23847, demoDir = 1;
+function startDemoCounter() {
+  updateLiveCount(demoCount);
+  setInterval(() => {
+    demoCount += (Math.floor(Math.random() * 5) + 1) * demoDir;
+    if (demoCount > 24100) demoDir = -1;
+    if (demoCount < 23600) demoDir = 1;
+    updateLiveCount(demoCount);
+  }, 2800);
+}
+
+function updateLiveCount(n) {
+  document.getElementById('live-count').textContent =
+    n.toLocaleString('ja-JP') + ' 人が今一緒に呼吸中';
+}
+
+/* ══════════════════════════════
+   BREATH ENGINE
+══════════════════════════════ */
+const MODES = {
+  '478':  [{ p:'吸って', d:4000, s:1.38 }, { p:'止めて', d:7000, s:1.38 }, { p:'吐いて', d:8000, s:1.0 }],
+  'box':  [{ p:'吸って', d:4000, s:1.38 }, { p:'止めて', d:4000, s:1.38 }, { p:'吐いて', d:4000, s:1.0 }, { p:'止めて', d:4000, s:1.0 }],
+  'calm': [{ p:'吸って', d:4000, s:1.38 }, { p:'吐いて', d:6000, s:1.0 }]
+};
+const SESSION_MS = 3 * 60 * 1000;
+
+let breathMode = '478';
+let running = false, cycleIdx = 0, phaseStart = 0, sessionStart = 0;
+let totalSec = 0, todaySessions = 0, totalSessions = 0, raf = null, statIv = null;
+
+const circleEl    = document.getElementById('circle');
+const clabelEl    = document.getElementById('clabel');
+const bphaseEl    = document.getElementById('bphase');
+const bsubEl      = document.getElementById('bsub');
+const bprogFill   = document.getElementById('bprog-fill');
+const startBtn    = document.getElementById('start-btn');
+const rippleEl    = document.getElementById('ripple');
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+function easeIO(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
+
+function doRipple() {
+  rippleEl.style.animation = 'none';
+  rippleEl.offsetWidth;
+  rippleEl.style.animation = 'rout 1.3s ease-out forwards';
+}
+
+function tick() {
+  if (!running) return;
+  const now = Date.now();
+  const cycles = MODES[breathMode];
+  const elapsed = now - phaseStart;
+  const cyc = cycles[cycleIdx];
+
+  if (elapsed >= cyc.d) {
+    phaseStart = now;
+    const prevIdx = cycleIdx;
+    cycleIdx = (cycleIdx + 1) % cycles.length;
+    if (cycleIdx === 0) doRipple();
+    raf = requestAnimationFrame(tick);
+    return;
+  }
+
+  const t = elapsed / cyc.d;
+  const prev = MODES[breathMode][(cycleIdx + MODES[breathMode].length - 1) % MODES[breathMode].length];
+  const scale = lerp(prev.s, cyc.s, easeIO(t));
+  circleEl.style.transform = `scale(${scale.toFixed(3)})`;
+  clabelEl.textContent = cyc.p;
+  bphaseEl.textContent = cyc.p;
+
+  const sEl = now - sessionStart;
+  const pct = Math.min(sEl / SESSION_MS * 100, 100);
+  bprogFill.style.width = pct + '%';
+  bprogFill.closest('[role=progressbar]').setAttribute('aria-valuenow', Math.round(pct));
+
+  const rem = Math.max(0, SESSION_MS - sEl);
+  const rm = Math.floor(rem / 60000), rs = Math.floor(rem % 60000 / 1000);
+  bsubEl.textContent = `残り ${rm}:${String(rs).padStart(2, '0')}`;
+
+  if (sEl >= SESSION_MS) { endSession(); return; }
+  raf = requestAnimationFrame(tick);
+}
+
+function startSession() {
+  running = true;
+  sessionStart = phaseStart = Date.now();
+  cycleIdx = 0;
+  todaySessions++;
+  totalSessions++;
+  document.getElementById('ms-today').textContent = todaySessions;
+  document.getElementById('stat-sessions').textContent = totalSessions;
+  startBtn.textContent = '終了';
+  doRipple();
+  if (currentBgm !== 'none') playBgm(currentBgm);
+  raf = requestAnimationFrame(tick);
+  statIv = setInterval(() => {
+    totalSec++;
+    const m = Math.floor(totalSec / 60), s = totalSec % 60;
+    const fmt = `${m}:${String(s).padStart(2, '0')}`;
+    document.getElementById('ms-time').textContent = fmt;
+    document.getElementById('stat-total').textContent = fmt;
+    updateChartToday();
+  }, 1000);
+}
+
+function endSession() {
+  running = false;
+  cancelAnimationFrame(raf);
+  clearInterval(statIv);
+  circleEl.style.transform = 'scale(1)';
+  clabelEl.textContent = '完了';
+  bphaseEl.textContent = 'セッション完了 ✓';
+  bsubEl.textContent = '';
+  bprogFill.style.width = '0%';
+  startBtn.textContent = 'もう一度';
+  fadeBgmOut();
+  toast('お疲れさまでした！');
+}
+
+window.toggleBreath = () => { if (running) endSession(); else startSession(); };
+window.setBreathMode = (m, el) => {
+  breathMode = m;
+  MODES; // reference check
+  document.querySelectorAll('.mp').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+  el.classList.add('active'); el.setAttribute('aria-pressed','true');
+  if (!running) bphaseEl.textContent = { '478':'4-7-8 呼吸', 'box':'ボックス呼吸', 'calm':'リラックス呼吸' }[m];
+};
+
+function updateChartToday() {
+  const pct = Math.min(totalSec / 600 * 100, 100);
+  document.getElementById('chart-today').style.height = Math.max(pct, 4) + '%';
+}
+
+/* ══════════════════════════════
+   NAVIGATION
+══════════════════════════════ */
+window.goTo = (name) => {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('scr-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'friends') document.getElementById('friends-dot').style.display = 'none';
+};
+
+/* ══════════════════════════════
+   FRIENDS
+══════════════════════════════ */
+window.joinFriend = (name) => {
+  toast(name + ' のセッションに参加します！');
+  goTo('home');
+  setTimeout(startSession, 600);
+};
+window.inviteFriend = (name) => {
+  toast(name + ' に招待を送りました 📩');
+};
+window.shareInvite = () => {
+  const link = location.href + '?ref=' + userId;
+  if (navigator.share) {
+    navigator.share({ title: 'BreathSync', text: '一緒に深呼吸しよう！', url: link });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(() => toast('招待リンクをコピーしました！'));
+  } else {
+    toast('招待リンク: ' + link);
+  }
+};
+
+/* ══════════════════════════════
+   ROOMS
+══════════════════════════════ */
+window.joinRoom = (name, n) => {
+  toast(name + ' (' + n.toLocaleString('ja-JP') + '人) に参加します');
+  goTo('home');
+  bphaseEl.textContent = name + ' に参加中';
+  setTimeout(startSession, 600);
+};
+window.requirePro = () => {
+  toast('このルームは Pro プランが必要です');
+  setTimeout(() => goTo('profile'), 800);
+};
+
+/* ══════════════════════════════
+   STRIPE
+══════════════════════════════ */
+window.openStripe = (plan) => {
+  const url = plan === 'monthly' ? window.STRIPE_LINK_MONTHLY : window.STRIPE_LINK_YEARLY;
+  if (!url || url.startsWith('YOUR_')) {
+    toast('SETUP.md を参照して Stripe リンクを設定してください');
+    return;
+  }
+  window.open(url, '_blank', 'noopener');
+};
+
+/* ══════════════════════════════
+   MODAL
+══════════════════════════════ */
+const MODAL_CONTENTS = {
+  notify:  { title:'通知設定', body:'<p style="color:var(--t2);font-size:14px">毎日のリマインダー時刻を選択してください。</p><br><input type="time" value="07:00" style="font-size:16px;padding:8px 12px;border:.5px solid var(--border2);border-radius:8px;background:var(--surface2);color:var(--t);width:100%">' },
+  pattern: { title:'呼吸パターン', body:'<div style="display:flex;flex-direction:column;gap:8px">'+['4-7-8 呼吸（デフォルト）','ボックス呼吸','リラックス呼吸'].map(n=>`<button onclick="toast('${n}に設定しました');closeModal()" style="padding:12px;border:.5px solid var(--border2);border-radius:8px;text-align:left;font-size:14px;color:var(--t);background:var(--surface2)">${n}</button>`).join('')+'</div>' },
+  sound:   { title:'バックグラウンド音', body:'<div style="display:flex;flex-direction:column;gap:8px">'+['雨音（選択中）','波の音','森の音','ホワイトノイズ','なし'].map(n=>`<button onclick="toast('${n}に設定しました');closeModal()" style="padding:12px;border:.5px solid var(--border2);border-radius:8px;text-align:left;font-size:14px;color:var(--t);background:var(--surface2)">${n}</button>`).join('')+'</div>' },
+  export:  { title:'データエクスポート', body:'<p style="color:var(--t2);font-size:14px;margin-bottom:12px">過去のセッションデータをCSV形式でダウンロードします。</p><button onclick="exportCSV();closeModal()" style="width:100%;padding:12px;background:var(--g);color:#fff;border-radius:8px;font-size:14px;font-weight:600">CSVをダウンロード</button>' }
+};
+window.openModal = (key) => {
+  const c = MODAL_CONTENTS[key];
+  if (!c) return;
+  document.getElementById('modal-title').textContent = c.title;
+  document.getElementById('modal-body').innerHTML = c.body;
+  document.getElementById('modal-overlay').classList.add('open');
+};
+window.closeModal = () => document.getElementById('modal-overlay').classList.remove('open');
+
+function exportCSV() {
+  const rows = [['日付','セッション数','合計時間（秒）'],
+                [new Date().toLocaleDateString('ja-JP'), todaySessions, totalSec]];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'breathsync_export.csv';
+  a.click();
+}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+let toastTimer = null;
+window.toast = (msg) => {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+};
+
+/* ══════════════════════════════
+   KEYBOARD SHORTCUTS
+══════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleBreath(); }
+  else if (e.key === 'Escape') { if (running) endSession(); closeModal(); }
+  else if (e.key === '1') goTo('home');
+  else if (e.key === '2') goTo('friends');
+  else if (e.key === '3') goTo('rooms');
+  else if (e.key === '4') goTo('stats');
+  else if (e.key === '5') goTo('profile');
+});
+
+/* ══════════════════════════════
+   PWA SERVICE WORKER
+══════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+/* ══════════════════════════════
+   BOOT
+══════════════════════════════ */
+initSupabase();
+// フレンド通知ドット（デモ）
+setTimeout(() => { document.getElementById('friends-dot').style.display = 'block'; }, 5000);
+</script>
+</body>
+</html>
